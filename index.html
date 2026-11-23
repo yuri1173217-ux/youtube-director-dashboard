@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>100만 유튜버 총감독 대시보드 v3</title>
+<title>100만 유튜버 총감독 대시보드 v3.1</title>
 <style>
   :root {
     --bg: #0b0f19;
@@ -110,6 +110,12 @@
   }
   .tool-tag b { color: #f8fafc; }
   .tool-tag.hl { border-color: rgba(45,212,191,0.45); background: rgba(45,212,191,0.10); color: #ccfbf1; }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11.5px; background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 1px 5px; border-radius: 4px; color: #fde68a;
+  }
 
   .intro {
     font-size: 12.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.6;
@@ -134,7 +140,7 @@
 <body>
 
 <div class="header">
-  <span class="badge">v3 · 쉬운 프로그램 이름표 반영</span>
+  <span class="badge">v3.1 · Demucs v4 (보컬 제거 MR 추출) 추가</span>
   <h1>100만 유튜버 에이전트 맵</h1>
   <p>에이전트를 누르면 지금 쓰고 있는 툴과 방법이 바로 뜹니다</p>
 </div>
@@ -296,7 +302,7 @@
       <div class="agent-body">
         <div class="now-box">
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
-          <div class="now-text">어사이드(23팀장) · MiniMax H3(영상 1순위) · ElevenLabs Wooni(나레이션) · 파이썬 도표 + BGM/효과음</div>
+          <div class="now-text">어사이드(23팀장) · MiniMax H3(영상 1순위) · ElevenLabs Wooni(나레이션) · 파이썬 도표 + Demucs v4(MR 추출) + BGM/효과음</div>
         </div>
         <div class="detail-block">
           <div class="detail-label">🏷️ 이 일에 쓰는 이름표 (PC에 이미 다 있음)</div>
@@ -304,7 +310,7 @@
             <li><b>🎬 움직이는 영상기</b> — MiniMax H3(1순위) → Wan 2.2(2순위) → Veo 3.1(유료 크레딧)</li>
             <li><b>📊 모션그래픽·도표·편집</b> — Manim·파이썬(PIL)로 도표·자막, ffmpeg·CapCut·Vrew로 합치기</li>
             <li><b>🎙️ 목소리 성우실</b> — 일레븐랩스(Wooni·Hyuk), 보이스박스(삼촌·소희), 제미나이(Leda), VoxCPM2</li>
-            <li><b>🎵 작곡·BGM실</b> — 수노(Suno Pro), ACE-Step(수면), YuE2(재즈·색소폰)</li>
+            <li><b>🎵 작곡·BGM실</b> — 수노(Suno Pro), ACE-Step(수면), YuE2(재즈·색소폰), <b>Demucs v4</b>(수노 곡에서 보컬만 빼 MR 추출)</li>
             <li><b>🏭 원클릭 자동화 공장</b> — 속스트라 v5.1 · 실록메이커 · 공방(4반장)</li>
           </ul>
         </div>
@@ -575,7 +581,7 @@
       <div class="agent-body">
         <div class="now-box">
           <div class="now-label">✅ 지금 쓰는 조합</div>
-          <div class="now-text">수노(Suno Pro) + ACE-Step(수면음악) + YuE2(재즈·색소폰) + BGM 폴더</div>
+          <div class="now-text">수노(Suno Pro) + ACE-Step(수면음악) + YuE2(재즈·색소폰) + Demucs v4(보컬 빼고 MR) + BGM 폴더</div>
         </div>
         <div class="detail-block">
           <div class="detail-label">누르면 나오는 실제 이름</div>
@@ -583,6 +589,7 @@
             <li><b>수노(Suno Pro)</b> — 유료 작곡. 월 다운로드 20회, 상업권은 유료일 때 만든 곡만</li>
             <li><b>ACE-Step</b> — 내 PC 무료. 수면음악 30곡·카페음악 50곡 만든 이력</li>
             <li><b>YuE2</b> — 내 PC 무료. 재즈트롯·트롯 색소폰 각 20곡</li>
+            <li><b>Demucs v4 (보컬 제거 MR 추출기)</b> — Meta 오픈소스 1위 음원 분리 툴(<code>extract_mr.py</code>). 수노(Suno)로 만든 곡에서 <b>보컬만 17초 만에 쏙 빼고</b> 채널 전용 BGM/MR만 추출. 내 PC 무료</li>
             <li><b>BGM·효과음 폴더</b> — 묵직 10곡·재미 10곡, 등장·웃김·전환·긴장 효과음</li>
           </ul>
         </div>
@@ -632,7 +639,7 @@
           <div class="detail-label">실제 조합</div>
           <ul class="detail-list">
             <li><b>성경×과학</b> — Flow 그림 + H3 클립 + 일레븐랩스 Wooni + 파이썬 도표 + BGM</li>
-            <li><b>트롯두스푼</b> — VoxCPM2 목소리 + CapCut / ffmpeg 복사 송출 라이브 / ACE-Step 수면음악 / Suno 엿가락</li>
+            <li><b>트롯두스푼</b> — VoxCPM2 목소리 + CapCut / ffmpeg 복사 송출 라이브 / ACE-Step 수면음악 / Suno 엿가락 / Demucs v4로 보컬 뺀 MR</li>
             <li><b>쇼핑판정단</b> — ChatGPT 이미지 + H3·Wan 클립 + 보이스박스·제미나이 Leda + CapCut 초안</li>
           </ul>
         </div>
@@ -643,7 +650,7 @@
 </div>
 
 <div class="footer">
-  v3 · 2026-11-23 · 어사이드 PC 정리본 기반<br>
+  v3.1 · 2026-11-24 · 어사이드 PC 정리본 + Demucs v4<br>
   틴이님 전용 · 검색 노출 안 함
 </div>
 

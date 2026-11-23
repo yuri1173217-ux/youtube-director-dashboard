@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>100만 유튜버 총감독 대시보드 v2</title>
+<title>100만 유튜버 총감독 대시보드 v3</title>
 <style>
   :root {
     --bg: #0b0f19;
@@ -16,48 +16,54 @@
     --blue: #38bdf8;
     --purple: #a78bfa;
     --green: #34d399;
+    --teal: #2dd4bf;
     --now-bg: rgba(52, 211, 153, 0.10);
     --now-border: rgba(52, 211, 153, 0.35);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-    background: var(--bg);
+    background: radial-gradient(1200px 500px at 50% -180px, #16203a 0%, var(--bg) 60%) no-repeat, var(--bg);
     color: var(--text);
-    line-height: 1.5;
-    padding: 16px 14px 48px;
+    line-height: 1.55;
+    padding: 20px 16px 56px;
+    max-width: 760px;
+    margin: 0 auto;
   }
-  .header { text-align: center; padding: 10px 0 16px; }
+  .header { text-align: center; padding: 6px 0 18px; }
   .header .badge {
     display: inline-block;
     font-size: 11px; font-weight: 700; color: var(--gold);
     background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35);
     padding: 4px 10px; border-radius: 999px; margin-bottom: 8px;
   }
-  .header h1 { font-size: 20px; font-weight: 800; }
-  .header p { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+  .header h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.2px; }
+  .header p { font-size: 12.5px; color: var(--muted); margin-top: 5px; }
 
-  .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+  .tabs { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 9px; margin-bottom: 16px; }
   .tab-btn {
     background: var(--card); border: 1.5px solid var(--border); border-radius: 14px;
-    padding: 14px 12px; text-align: left; color: var(--text); cursor: pointer;
+    padding: 12px 11px; text-align: left; color: var(--text); cursor: pointer;
+    transition: border-color .15s, background .15s;
   }
-  .tab-btn .num { font-size: 11px; font-weight: 700; color: var(--muted); display: block; }
-  .tab-btn .title { font-size: 16px; font-weight: 800; display: block; margin-top: 2px; }
-  .tab-btn .sub { font-size: 11.5px; color: var(--muted); display: block; margin-top: 2px; }
+  .tab-btn .num { font-size: 10.5px; font-weight: 700; color: var(--muted); display: block; letter-spacing: .3px; }
+  .tab-btn .title { font-size: 15px; font-weight: 800; display: block; margin-top: 2px; letter-spacing: -0.3px; }
+  .tab-btn .sub { font-size: 11px; color: var(--muted); display: block; margin-top: 2px; }
   .tab-btn.active-views { border-color: var(--blue); background: linear-gradient(145deg, rgba(56,189,248,0.14), var(--card)); }
   .tab-btn.active-views .num { color: var(--blue); }
   .tab-btn.active-subs { border-color: var(--purple); background: linear-gradient(145deg, rgba(167,139,250,0.14), var(--card)); }
   .tab-btn.active-subs .num { color: var(--purple); }
+  .tab-btn.active-tools { border-color: var(--teal); background: linear-gradient(145deg, rgba(45,212,191,0.14), var(--card)); }
+  .tab-btn.active-tools .num { color: var(--teal); }
 
   .agent-list { display: flex; flex-direction: column; gap: 10px; }
   .agent-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
   .agent-head {
     width: 100%; background: none; border: none; color: var(--text);
     padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
-    text-align: left; cursor: pointer;
+    text-align: left; cursor: pointer; gap: 10px;
   }
-  .agent-head-left { display: flex; align-items: center; gap: 12px; }
+  .agent-head-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
   .agent-icon {
     width: 38px; height: 38px; border-radius: 10px; display: flex;
     align-items: center; justify-content: center; font-size: 18px;
@@ -70,9 +76,13 @@
     background: rgba(52, 211, 153, 0.14); color: var(--green); flex-shrink: 0;
   }
   .owner-pill.aside { background: rgba(251, 191, 36, 0.14); color: var(--gold); }
+  .owner-pill.free { background: rgba(45, 212, 191, 0.14); color: var(--teal); }
+  .owner-pill.mix { background: rgba(251, 191, 36, 0.14); color: var(--gold); }
 
   .agent-body { display: none; padding: 0 16px 16px; border-top: 1px solid rgba(255,255,255,0.06); }
   .agent-card.open .agent-body { display: block; }
+  .agent-head .chev { color: var(--muted); font-size: 12px; flex-shrink: 0; transition: transform .15s; }
+  .agent-card.open .chev { transform: rotate(180deg); }
 
   .now-box {
     margin-top: 12px;
@@ -81,33 +91,50 @@
     border-radius: 10px;
     padding: 10px 12px;
   }
-  .now-label {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--green);
-    margin-bottom: 4px;
-  }
+  .now-label { font-size: 11px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
   .now-text { font-size: 13px; color: #ecfdf5; font-weight: 600; }
 
   .detail-block { margin-top: 12px; }
-  .detail-label { font-size: 11px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+  .detail-label { font-size: 11px; font-weight: 700; color: var(--blue); margin-bottom: 5px; }
   .subs-mode .detail-label { color: var(--purple); }
+  .tools-mode .detail-label { color: var(--teal); }
   .detail-list { list-style: none; font-size: 12.5px; color: #cbd5e1; }
-  .detail-list li { position: relative; padding-left: 14px; margin-bottom: 4px; }
+  .detail-list li { position: relative; padding-left: 14px; margin-bottom: 5px; }
   .detail-list li::before { content: "•"; position: absolute; left: 2px; color: var(--muted); }
+  .detail-list b { color: #f8fafc; font-weight: 700; }
 
   .tool-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
   .tool-tag {
     font-size: 11.5px; background: rgba(255,255,255,0.05); border: 1px solid var(--border);
     padding: 3px 8px; border-radius: 6px; color: #cbd5e1;
   }
+  .tool-tag b { color: #f8fafc; }
+  .tool-tag.hl { border-color: rgba(45,212,191,0.45); background: rgba(45,212,191,0.10); color: #ccfbf1; }
+
+  .intro {
+    font-size: 12.5px; color: var(--muted); margin-bottom: 12px; line-height: 1.6;
+  }
+  .intro b { color: var(--text); }
   .hidden { display: none; }
+
+  .footer { text-align: center; font-size: 11px; color: #64748b; margin-top: 22px; line-height: 1.7; }
+
+  @media (max-width: 560px) {
+    .tabs { grid-template-columns: 1fr 1fr; }
+    #btn-tools { grid-column: span 2; }
+    .tab-btn .title { font-size: 14px; }
+    body { padding: 16px 13px 48px; }
+  }
+  @media (min-width: 900px) {
+    body { padding-top: 32px; }
+    .header h1 { font-size: 23px; }
+  }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <span class="badge">v2 · 내 현재 툴 &amp; 방법 바로보기</span>
+  <span class="badge">v3 · 쉬운 프로그램 이름표 반영</span>
   <h1>100만 유튜버 에이전트 맵</h1>
   <p>에이전트를 누르면 지금 쓰고 있는 툴과 방법이 바로 뜹니다</p>
 </div>
@@ -122,6 +149,11 @@
     <span class="num">PILLAR 02</span>
     <span class="title">👑 100만 구독자</span>
     <span class="sub">팬덤·자산을 쌓는 엔진</span>
+  </button>
+  <button id="btn-tools" class="tab-btn" onclick="switchTab('tools')">
+    <span class="num">TOOLBOX</span>
+    <span class="title">🧰 내 툴 이름표</span>
+    <span class="sub">쓰는 프로그램 한눈에</span>
   </button>
 </div>
 
@@ -151,6 +183,14 @@
             <li>대중적 소재 + 한 줄 실행 규칙 확정 후 제작팀 전달</li>
           </ul>
         </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag"><b>🤖 슉클</b> 기획·데이터 분석</span>
+            <span class="tool-tag"><b>🔍 떡상 탐지기</b> 뜨는 영상 찾기</span>
+            <span class="tool-tag"><b>📈 유튜브 스튜디오</b> 채널 수치 확인</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -169,6 +209,14 @@
         <div class="now-box">
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
           <div class="now-text">슉클 AI 이미지 생성 + Python PIL 큰 글씨 자동 합성 + 물음표(?) 없는 분할 비교</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">🖼️ 이 일에 쓰는 이름표</div>
+          <ul class="detail-list">
+            <li><b>🎨 그림 그리는 화실 · ChatGPT 이미지</b> — 한글 간판·글씨가 정확해서 썸네일 글자용</li>
+            <li><b>🎨 그림 그리는 화실 · Google Flow(나노바나나)</b> — 배경 그림 무료로 뽑기(0크레딧)</li>
+            <li><b>📊 모션그래픽·도표·편집 · 파이썬(PIL)</b> — 큰 글씨·분할 비교를 직접 합성</li>
+          </ul>
         </div>
         <div class="detail-block">
           <div class="detail-label">나중에 추가 가능한 보강 툴</div>
@@ -197,6 +245,13 @@
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
           <div class="now-text">슉클(봉봉 16챕터 해부 공식: 단-장 교대 + 챕터 끝 리텐션 브릿지 + 자기 반박)</div>
         </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag"><b>🤖 슉클</b> 봉봉 16챕터 해부</span>
+            <span class="tool-tag"><b>📈 유튜브 스튜디오</b> 이탈 지점 확인</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -216,6 +271,14 @@
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
           <div class="now-text">슉클 팩트체크(웹 검증) + 생활 단위 환산(아파트·롯데월드타워) + 첫 30초 물음표 0개 대본</div>
         </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag"><b>✍️ 대본 스킬</b> 훅 21공식</span>
+            <span class="tool-tag"><b>🌐 웹 검색</b> 수치·출처 확인</span>
+            <span class="tool-tag"><b>🎙️ 어사이드 스킷</b> 채널별 대본</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -233,14 +296,25 @@
       <div class="agent-body">
         <div class="now-box">
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
-          <div class="now-text">어사이드(23팀장) · 미니맥스 H3(영상) · 일레븐랩스 Wooni(나레이션) + (내일 나머지 PC 툴 목록 반영 예정)</div>
+          <div class="now-text">어사이드(23팀장) · MiniMax H3(영상 1순위) · ElevenLabs Wooni(나레이션) · 파이썬 도표 + BGM/효과음</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">🏷️ 이 일에 쓰는 이름표 (PC에 이미 다 있음)</div>
+          <ul class="detail-list">
+            <li><b>🎬 움직이는 영상기</b> — MiniMax H3(1순위) → Wan 2.2(2순위) → Veo 3.1(유료 크레딧)</li>
+            <li><b>📊 모션그래픽·도표·편집</b> — Manim·파이썬(PIL)로 도표·자막, ffmpeg·CapCut·Vrew로 합치기</li>
+            <li><b>🎙️ 목소리 성우실</b> — 일레븐랩스(Wooni·Hyuk), 보이스박스(삼촌·소희), 제미나이(Leda), VoxCPM2</li>
+            <li><b>🎵 작곡·BGM실</b> — 수노(Suno Pro), ACE-Step(수면), YuE2(재즈·색소폰)</li>
+            <li><b>🏭 원클릭 자동화 공장</b> — 속스트라 v5.1 · 실록메이커 · 공방(4반장)</li>
+          </ul>
         </div>
         <div class="detail-block">
           <div class="detail-label">모션그래픽·보강 툴 후보</div>
           <div class="tool-tags">
-            <span class="tool-tag">Premiere / CapCut</span>
+            <span class="tool-tag hl"><b>Manim</b> 도표 모션</span>
+            <span class="tool-tag hl"><b>CapCut</b> 편집 초안</span>
             <span class="tool-tag">After Effects</span>
-            <span class="tool-tag">Remotion / Manim</span>
+            <span class="tool-tag">Remotion</span>
             <span class="tool-tag">Typecast</span>
           </div>
         </div>
@@ -262,6 +336,14 @@
         <div class="now-box">
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
           <div class="now-text">슉클 매일 18:30(고정댓글) · 21:00(일일 리포트·자동자막 삭제·댓글 하트/답글) 자동 루틴</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag"><b>📈 유튜브 스튜디오</b> CTR·유지율·4,000시간</span>
+            <span class="tool-tag"><b>🗓️ 정기 루틴</b> 18:30 · 21:00 자동</span>
+            <span class="tool-tag"><b>📄 로드맵 문서</b> 48시간 복기 기록</span>
+          </div>
         </div>
       </div>
     </div>
@@ -306,6 +388,14 @@
           <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
           <div class="now-text">쇼츠 '관련 동영상'에 롱폼 직접 연결 + 고정댓글 롱폼 믹스 링크 + 11시간 30분 라이브 송출</div>
         </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag"><b>📡 라이브 송출</b> ffmpeg 복사 송출(무료)</span>
+            <span class="tool-tag"><b>🎥 OBS</b> 화면·장면 구성</span>
+            <span class="tool-tag"><b>🎬 쇼츠 공장</b> 속스트라 v5.1</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -349,21 +439,249 @@
   </div>
 </div>
 
+<!-- TOOLBOX -->
+<div id="panel-tools" class="hidden tools-mode">
+  <p class="intro">
+    어려운 영어 이름 대신 <b>"무슨 일 하는지"</b>로 부릅니다. 카드를 누르면 실제 프로그램 이름과 쓰임이 펼쳐져요.
+    <br>초록색 글씨는 <b>지금 쓰는 조합</b>입니다.
+  </p>
+  <div class="agent-list">
+
+    <div class="agent-card open">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎨</div>
+          <div>
+            <div class="agent-title">그림 그리는 화실</div>
+            <div class="agent-role">이미지 · 썸네일 배경 · 간판 글씨</div>
+          </div>
+        </div>
+        <span class="owner-pill free">무료 위주</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">Flow(나노바나나) + ChatGPT 이미지 + Z-Image</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>Google Flow (나노바나나 2.1)</b> — 무료 0크레딧, 하루 약 400장, 2K 저장. 성경×과학 그림 담당</li>
+            <li><b>ChatGPT 이미지</b> — 한글 간판·글씨가 정확. 썸네일과 쇼핑판정단 이미지</li>
+            <li><b>Z-Image</b> — 내 PC에서 장당 약 6초, 완전 무료. 글씨는 못 씀</li>
+            <li>규칙: 제품이 나오는 컷은 실제 제품 사진을 참고로 넣기</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎬</div>
+          <div>
+            <div class="agent-title">움직이는 영상기</div>
+            <div class="agent-role">정지 그림을 2~8초 움직이는 클립으로</div>
+          </div>
+        </div>
+        <span class="owner-pill free">무료 위주</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">MiniMax H3(1순위) → Wan 2.2(2순위) → Veo 3.1(유료일 때만)</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>MiniMax H3</b> — 내 PC 1순위. 2~6초 클립 1개 1~2분, 소리(환경음)도 같이 나옴</li>
+            <li><b>Wan 2.2</b> — 내 PC 2순위. 5초 클립 4~6분, 카메라 움직임 프리셋(뮤비·쇼핑)</li>
+            <li><b>Veo 3.1</b> — 구글 Flow 안의 고화질 영상. 유료 크레딧(하루 50개 → 8초 5편 정도)</li>
+            <li><b>InfiniteTalk</b> — 말하는 입 모양 맞추기(공방 엔진)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">📊</div>
+          <div>
+            <div class="agent-title">모션그래픽 · 도표 · 편집기</div>
+            <div class="agent-role">봉봉식 도표·자막 · 컷편집 · 최종 합치기</div>
+          </div>
+        </div>
+        <span class="owner-pill free">무료</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">파이썬(PIL) 도표 + ffmpeg 합치기 + CapCut 초안</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>Manim</b> — 수식·도표가 움직이는 모션그래픽(PC 무료)</li>
+            <li><b>파이썬(PIL)</b> — 봉봉 스타일 도표·그래프·자막을 직접 그림</li>
+            <li><b>ffmpeg</b> — 영상 합치기·자르기·인코딩의 중심(무료)</li>
+            <li><b>CapCut</b> — 컷편집 초안을 트랙별로 만들어 줌</li>
+            <li><b>Vrew</b> — 자막·컷 편집(설치돼 있음, 사용은 약함)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎙️</div>
+          <div>
+            <div class="agent-title">목소리 성우실 (TTS)</div>
+            <div class="agent-role">나레이션 · 채널별 목소리</div>
+          </div>
+        </div>
+        <span class="owner-pill mix">유료+무료</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">일레븐랩스 Wooni(건강·성경) · Hyuk(트롯 롱폼) · 보이스박스 삼촌 · 제미나이 Leda · VoxCPM2</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>일레븐랩스(ElevenLabs)</b> — 유료 최고 품질. <b>Wooni</b>(차분한 남성)·<b>Hyuk</b>(트롯). 샘플 한 줄 먼저 → 확정 후 전체</li>
+            <li><b>보이스박스(Voicebox)</b> — 내 PC 무료. <b>충청도 삼촌</b>(쇼핑)·<b>소희</b>(김박사 꿀통)</li>
+            <li><b>제미나이 음성</b> — 무료. 쇼핑판정단 <b>고양이 Leda</b>로 확정</li>
+            <li><b>VoxCPM2</b> — 내 PC 무료 목소리 복제. 트롯 쇼츠 기준 목소리</li>
+            <li>Typecast·OpenAI TTS는 키만 있고 아직 안 씀</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎵</div>
+          <div>
+            <div class="agent-title">작곡 · BGM실</div>
+            <div class="agent-role">노래·배경음악·효과음</div>
+          </div>
+        </div>
+        <span class="owner-pill mix">유료+무료</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">수노(Suno Pro) + ACE-Step(수면음악) + YuE2(재즈·색소폰) + BGM 폴더</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>수노(Suno Pro)</b> — 유료 작곡. 월 다운로드 20회, 상업권은 유료일 때 만든 곡만</li>
+            <li><b>ACE-Step</b> — 내 PC 무료. 수면음악 30곡·카페음악 50곡 만든 이력</li>
+            <li><b>YuE2</b> — 내 PC 무료. 재즈트롯·트롯 색소폰 각 20곡</li>
+            <li><b>BGM·효과음 폴더</b> — 묵직 10곡·재미 10곡, 등장·웃김·전환·긴장 효과음</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🏭</div>
+          <div>
+            <div class="agent-title">원클릭 자동화 공장</div>
+            <div class="agent-role">기획부터 조립까지 한 번에</div>
+          </div>
+        </div>
+        <span class="owner-pill free">내 PC 무료</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 쓰는 조합</div>
+          <div class="now-text">속스트라 v5.1 · 실록메이커 · 공방(4반장 체제)</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">누르면 나오는 실제 이름</div>
+          <ul class="detail-list">
+            <li><b>속스트라 v5.1</b> — 쇼츠 공장·실록 다큐·떡상 탐색기·통합 설정 4탭</li>
+            <li><b>실록메이커</b> — 사극 다큐 제작, 속스트라와 같은 엔진</li>
+            <li><b>공방</b> — 공장장 + 4반장(기획·작가·제작·출고). 승인 없이는 업로드 안 함</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎯</div>
+          <div>
+            <div class="agent-title">채널별로 이렇게 씁니다</div>
+            <div class="agent-role">어떤 채널에 어떤 조합인지</div>
+          </div>
+        </div>
+        <span class="owner-pill">3채널</span>
+      </button>
+      <div class="agent-body">
+        <div class="detail-block">
+          <div class="detail-label">실제 조합</div>
+          <ul class="detail-list">
+            <li><b>성경×과학</b> — Flow 그림 + H3 클립 + 일레븐랩스 Wooni + 파이썬 도표 + BGM</li>
+            <li><b>트롯두스푼</b> — VoxCPM2 목소리 + CapCut / ffmpeg 복사 송출 라이브 / ACE-Step 수면음악 / Suno 엿가락</li>
+            <li><b>쇼핑판정단</b> — ChatGPT 이미지 + H3·Wan 클립 + 보이스박스·제미나이 Leda + CapCut 초안</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  v3 · 2026-11-23 · 어사이드 PC 정리본 기반<br>
+  틴이님 전용 · 검색 노출 안 함
+</div>
+
 <script>
+  var TABS = ['views', 'subs', 'tools'];
+
   function switchTab(tab) {
-    const pViews = document.getElementById('panel-views');
-    const pSubs = document.getElementById('panel-subs');
-    const bViews = document.getElementById('btn-views');
-    const bSubs = document.getElementById('btn-subs');
-    if (tab === 'views') {
-      pViews.classList.remove('hidden'); pSubs.classList.add('hidden');
-      bViews.classList.add('active-views'); bSubs.classList.remove('active-subs');
-    } else {
-      pSubs.classList.remove('hidden'); pViews.classList.add('hidden');
-      bSubs.classList.add('active-subs'); bViews.classList.remove('active-views');
-    }
+    TABS.forEach(function (name) {
+      var panel = document.getElementById('panel-' + name);
+      var btn = document.getElementById('btn-' + name);
+      if (!panel || !btn) return;
+      if (name === tab) {
+        panel.classList.remove('hidden');
+        btn.classList.add('active-' + name);
+        btn.setAttribute('aria-selected', 'true');
+      } else {
+        panel.classList.add('hidden');
+        btn.classList.remove('active-' + name);
+        btn.setAttribute('aria-selected', 'false');
+      }
+    });
+    if (history.replaceState) history.replaceState(null, '', '#' + tab);
   }
-  function toggleCard(btn) { btn.parentElement.classList.toggle('open'); }
+
+  function toggleCard(btn) {
+    var card = btn.parentElement;
+    card.classList.toggle('open');
+    btn.setAttribute('aria-expanded', card.classList.contains('open') ? 'true' : 'false');
+  }
+
+  (function () {
+    document.querySelectorAll('.tab-btn').forEach(function (b, i) {
+      b.setAttribute('role', 'tab');
+      b.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+    });
+    var hash = (location.hash || '').replace('#', '');
+    if (TABS.indexOf(hash) >= 0 && hash !== 'views') switchTab(hash);
+  })();
 </script>
 </body>
 </html>

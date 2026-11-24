@@ -33,6 +33,99 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 .empty{color:var(--mut);padding:30px;text-align:center}
 @media(max-width:560px){.row{grid-template-columns:28px 90px 1fr}.row img{width:90px}.rec dl{grid-template-columns:70px 1fr}}
 </style>
+<!-- 🔒 페이지 잠금 (index.html · morning.html 공통 / localStorage 공유 키) -->
+<style>
+  html.yd-locked body { visibility: hidden; }
+  html.yd-locked #yd-gate { visibility: visible; }
+  #yd-gate {
+    position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(1200px 500px at 50% -180px, #16203a 0%, #0b0f19 60%) no-repeat, #0b0f19;
+    color: #f1f5f9; padding: 24px 18px; visibility: visible;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+  #yd-gate .yd-card {
+    width: 100%; max-width: 330px; background: #141b2d; border: 1px solid #25314d;
+    border-radius: 18px; padding: 26px 22px 22px; text-align: center;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+  #yd-gate .yd-icon { font-size: 26px; line-height: 1; }
+  #yd-gate .yd-title { font-size: 16px; font-weight: 800; margin-top: 10px; letter-spacing: -0.3px; }
+  #yd-gate .yd-sub { font-size: 12.5px; color: #94a3b8; margin-top: 5px; }
+  #yd-gate input {
+    width: 100%; margin-top: 18px; background: #0b0f19; border: 1.5px solid #25314d;
+    border-radius: 12px; padding: 13px 14px; color: #f1f5f9; font-size: 20px; font-weight: 700;
+    letter-spacing: 6px; text-align: center;
+  }
+  #yd-gate input::placeholder { color: #475569; letter-spacing: 4px; }
+  #yd-gate input:focus { outline: none; border-color: rgba(251, 191, 36, 0.7); }
+  #yd-gate button {
+    width: 100%; margin-top: 10px; background: rgba(251, 191, 36, 0.14); border: 1.5px solid rgba(251, 191, 36, 0.45);
+    color: #fbbf24; font-size: 14px; font-weight: 800; border-radius: 12px; padding: 12px; cursor: pointer;
+    font-family: inherit;
+  }
+  #yd-gate button:active { transform: scale(0.98); }
+  #yd-gate .yd-msg { min-height: 16px; margin-top: 9px; font-size: 12px; font-weight: 700; color: #f87171; }
+</style>
+<script>
+(function () {
+  var KEY = 'yd-unlock-v1', VAL = 'ok';
+  var HASH = '5d1a8659abe2b8e0ed3b158d746fe06bd5bd12f4520ff900a835cdb76ae75ef5';
+  var PLAIN = '3188';
+  function unlocked() { try { return localStorage.getItem(KEY) === VAL; } catch (e) { return false; } }
+  if (unlocked()) return;
+  document.documentElement.classList.add('yd-locked');
+  function sha256(s) {
+    if (!(window.crypto && crypto.subtle && crypto.subtle.digest && window.TextEncoder)) return Promise.resolve(null);
+    try {
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      }).catch(function () { return null; });
+    } catch (e) { return Promise.resolve(null); }
+  }
+  function mount() {
+    var wrap = document.createElement('div');
+    wrap.id = 'yd-gate';
+    wrap.innerHTML = '<div class="yd-card">' +
+      '<div class="yd-icon">🔒</div>' +
+      '<div class="yd-title">틴이님 전용 대시보드</div>' +
+      '<div class="yd-sub">비밀번호 4자리를 입력하세요</div>' +
+      '<input id="yd-pass" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="current-password" placeholder="····" aria-label="비밀번호">' +
+      '<button id="yd-go" type="button">열기</button>' +
+      '<div class="yd-msg" id="yd-msg" role="alert"></div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    var inp = document.getElementById('yd-pass');
+    var msg = document.getElementById('yd-msg');
+    var card = wrap.querySelector('.yd-card');
+    function shake() {
+      if (!card || !card.animate) return;
+      card.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 220 });
+    }
+    function fail() {
+      msg.textContent = '비밀번호가 맞지 않습니다';
+      inp.value = '';
+      inp.focus();
+      shake();
+    }
+    function ok() {
+      try { localStorage.setItem(KEY, VAL); } catch (e) {}
+      wrap.remove();
+      document.documentElement.classList.remove('yd-locked');
+    }
+    function submit() {
+      var v = inp.value.trim();
+      if (!v) { msg.textContent = '비밀번호를 입력해 주세요'; return; }
+      sha256(v).then(function (h) { if (h ? h === HASH : v === PLAIN) { ok(); } else { fail(); } });
+    }
+    document.getElementById('yd-go').addEventListener('click', submit);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+    inp.addEventListener('input', function () { msg.textContent = ''; });
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', mount); } else { mount(); }
+})();
+</script>
+
 </head>
 <body>
 <div class="wrap">

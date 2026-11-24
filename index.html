@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>100만 유튜버 총감독 대시보드 v4.3</title>
+<title>100만 유튜버 총감독 대시보드 v4.4</title>
 <style>
   :root {
     --bg: #0b0f19;
@@ -333,7 +333,7 @@
 <body>
 
 <div class="header">
-  <span class="badge">v4.3 · 100만 구독자 1~4번 기준표 완성</span>
+  <span class="badge">v4.4 · 눈·귀 해부 스탭 신설</span>
   <h1>100만 유튜버 에이전트 맵</h1>
   <p>에이전트를 누르면 지금 쓰고 있는 툴과 방법이 바로 뜹니다</p>
   <div class="header-actions">
@@ -376,6 +376,54 @@
   </section>
 
   <div class="agent-list">
+    <div class="agent-card">
+      <button class="agent-head" onclick="toggleCard(this)">
+        <div class="agent-head-left">
+          <div class="agent-icon">🎧</div>
+          <div>
+            <div class="agent-title">0. 눈·귀 해부 스탭 (🎧👁️)</div>
+            <div class="agent-role">떡상 영상 직접 보고·듣고 화면·소리 비결 해부 → 총감독 보고</div>
+          </div>
+        </div>
+        <span class="owner-pill aside">어사이드 PC</span>
+      </button>
+      <div class="agent-body">
+        <div class="now-box">
+          <div class="now-label">✅ 지금 내가 쓰고 있는 툴 &amp; 방법</div>
+          <div class="now-text">yt-dlp + FFmpeg(컷·프레임) + Whisper/Gemini(대사·목소리·BGM·효과음)로 영상 직접 해부</div>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">1. 핵심 원칙</div>
+          <ul class="detail-list">
+            <li>AI가 제목·자막 글씨만 읽고 추측하지 않고, <b>실제 영상 화면과 소리를 직접 보고 들어</b> 터진 진짜 이유(컷 템포·성우 톤·BGM·훅)를 총감독에게 보고합니다.</li>
+          </ul>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">2. 꼭 할 일</div>
+          <ul class="detail-list">
+            <li><b>①</b> 떡상 영상 컷 전환 간격·카메라 무빙·첫 3초 화면 추출</li>
+            <li><b>②</b> 목소리 톤·말 속도·BGM 분위기·무대사 여부 판별</li>
+            <li><b>③</b> 총감독에게 <b>'벤치마킹 톤·TTS·BGM 확정표'</b> 1장 보고</li>
+          </ul>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">3. 산출물</div>
+          <ul class="detail-list">
+            <li>떡상 영상 <b>눈·귀 해부표</b> (화면 템포 + 목소리/BGM + 바꿀 주제/캐릭터 제안)</li>
+            <li>같은 해부표가 <b>아침 리포트(morning.html) 추천·탑10 카드</b>에 <b>🎧👁️ 눈·귀 해부표 보기</b> 토글로 그대로 표시됩니다.</li>
+          </ul>
+        </div>
+        <div class="detail-block">
+          <div class="detail-label">이 일에 쓰는 이름표</div>
+          <div class="tool-tags">
+            <span class="tool-tag hl"><b>👁️ FFmpeg·비전</b> 컷·카메라 무빙</span>
+            <span class="tool-tag hl"><b>🎧 Whisper·Gemini</b> 목소리·BGM·효과음</span>
+            <span class="tool-tag"><b>📥 yt-dlp</b> 레퍼런스 수집</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="agent-card open">
       <button class="agent-head" onclick="toggleCard(this)">
         <div class="agent-head-left">
@@ -1104,7 +1152,7 @@
 </div>
 
 <div class="footer">
-  v4.3 · 2026-11-24 · 떡상 Top 10 실시간 연동 · 1~6번 기준표 완전체 확정 · 100만 구독자 1~4번 기준표 완성<br>
+  v4.4 · 2026-11-24 · 떡상 Top 10 실시간 연동 · 눈·귀 해부 스탭 신설(0번) · 1~6번 기준표 완전체 확정 · 100만 구독자 1~4번 기준표 완성<br>
   틴이님 전용 · 검색 노출 안 함
 </div>
 

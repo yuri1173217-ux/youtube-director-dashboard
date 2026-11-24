@@ -48,6 +48,16 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 .srow .links a{font-size:12.5px;text-decoration:none}
 .tt-stats{color:var(--hot);font-weight:700}
 .creators{color:var(--mut);font-size:12.5px}
+/* 🎧👁️ 눈·귀 해부표 (eye_ear) 토글 */
+.ee{margin-top:10px;background:#131c17;border:1px solid #2b4a38;border-left:4px solid var(--ok);border-radius:8px;padding:0 10px}
+.ee summary{cursor:pointer;padding:9px 2px;font-size:13px;font-weight:800;color:var(--ok);list-style:none;display:flex;align-items:center;gap:5px}
+.ee summary::-webkit-details-marker{display:none}
+.ee summary::before{content:"\25B8";font-size:11px;color:var(--ok)}
+.ee[open] summary::before{content:"\25BE"}
+.ee dl,.rec .ee dl{margin:0 0 10px;display:grid;grid-template-columns:80px 1fr;gap:5px 10px}
+.ee dt{color:var(--mut);font-size:12.5px}
+.ee dd{margin:0;font-size:13px;word-break:break-word}
+@media(max-width:560px){.ee dl,.rec .ee dl{grid-template-columns:66px 1fr}}
 @media(max-width:560px){.row{grid-template-columns:28px 90px 1fr}.row img{width:90px}.rec dl{grid-template-columns:70px 1fr}}
 </style>
 <!-- 🔒 페이지 잠금 (index.html · morning.html 공통 / localStorage 공유 키) -->
@@ -189,6 +199,34 @@ const safeUrl = u => (typeof u === 'string' && /^https:\/\/(www\.)?(youtube\.com
 const fmt = n => (n == null ? '-' : Number(n).toLocaleString('ko-KR'));
 const num = (v, label) => label || fmt(v);
 
+/* 🎧👁️ 눈·귀 해부표 토글 — eye_ear 가 있을 때만 그린다(구버전 데이터는 그대로) */
+const EE_KEYS = [['hook','첫 3초 훅'],['cut_pace','컷 템포'],['visual_style','화면 스타일'],['voice_tone','목소리 톤'],['bgm_mood','BGM·효과음'],['twist_idea','바꿀 요소']];
+function eyeEarBox(src) {
+  try {
+    let obj = null;
+    if (typeof src === 'string') { if (!src.trim()) return null; obj = { '해부 요약': src }; }
+    else if (src && typeof src === 'object' && !Array.isArray(src)) obj = src;
+    if (!obj) return null;
+    const val = v => (v == null ? '' : (typeof v === 'object' ? JSON.stringify(v) : String(v))).trim();
+    const rows = []; const used = {};
+    EE_KEYS.forEach(([k, label]) => {
+      const v = val(obj[k]); if (!v) return;
+      used[k] = 1;
+      rows.push(el('dt', { text: label }), el('dd', { text: v }));
+    });
+    Object.keys(obj).forEach(k => {
+      if (used[k] || k === 'source' || k === 'url' || k === 'analyzed_at') return;
+      const v = val(obj[k]); if (!v) return;
+      rows.push(el('dt', { text: k }), el('dd', { text: v }));
+    });
+    if (!rows.length) return null;
+    return el('details', { class: 'ee' }, [
+      el('summary', { text: '🎧👁️ 눈·귀 해부표 보기' }),
+      el('dl', {}, rows)
+    ]);
+  } catch (e) { return null; }
+}
+
 /* ---------------- 유튜브 (기존 그대로) ---------------- */
 function render(d) {
   const out = $('#out'); out.replaceChildren();
@@ -203,7 +241,8 @@ function render(d) {
     add('왜 추천', r.why); add('위험', r.risks, 'risk'); add('확인할 것', r.check);
     out.append(el('div', {class: 'rec'}, [
       el('div', {}, [el('span', {class: 'tag', text: '추천 ' + (i + 1)}), el('span', {class: 'tag', text: r.topic || ''})]),
-      el('div', {class: 't', text: r.title || r.topic || ''}), dl
+      el('div', {class: 't', text: r.title || r.topic || ''}), dl,
+      eyeEarBox(r.eye_ear || r.eyeEar)
     ]));
   });
   out.append(el('h2', {text: '탑10 (구독자 대비 조회수 배수 순)'}));
@@ -215,7 +254,8 @@ function render(d) {
       el('div', {class: 'meta'}, [el('span', {class: 'tag', text: v.kw || ''}), document.createTextNode('조회 ' + fmt(v.views) + ' / 구독 ' + fmt(v.subs) + ' / ' + (v.sec || '-') + '초 / ' + (v.pub || ''))]),
       el('div', {class: 'meta'}, [el('span', {class: 'big', text: '구독자의 ' + fmt(v.ratio) + '배'}), document.createTextNode(med)]),
       el('div', {class: 'meta', text: '대표 채널: ' + (v.channel || '-') + ' (구독 ' + fmt(v.subs) + ')'}),
-      el('div', {class: 'links'}, [el('a', {href: safeUrl(v.url), target: '_blank', rel: 'noopener', text: '영상 보기'}), el('a', {href: safeUrl(v.channel_url), target: '_blank', rel: 'noopener', text: '채널 보기'})])
+      el('div', {class: 'links'}, [el('a', {href: safeUrl(v.url), target: '_blank', rel: 'noopener', text: '영상 보기'}), el('a', {href: safeUrl(v.channel_url), target: '_blank', rel: 'noopener', text: '채널 보기'})]),
+      eyeEarBox(v.eye_ear || v.eyeEar)
     ]);
     out.append(el('div', {class: 'row'}, [el('div', {class: 'rank', text: v.rank}), img, info]));
   });

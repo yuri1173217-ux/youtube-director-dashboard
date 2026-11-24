@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>아침 떡상 탑10 + 추천 3개</title>
+<style>
+:root{--bg:#0f1218;--card:#181d27;--line:#262d3b;--tx:#e8ecf3;--mut:#8f9bb0;--acc:#ffd600;--hot:#ff7a45;--ok:#4cc38a;--warn:#ff5d5d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 -apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 2px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+.bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 16px}
+select,a.btn{background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;text-decoration:none}
+h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
+.rec{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:10px;padding:14px;margin-bottom:12px}
+.rec .t{font-size:17px;font-weight:700}
+.tag{display:inline-block;background:#262d3b;border-radius:99px;padding:2px 10px;font-size:12px;color:var(--mut);margin-right:6px}
+.rec dl{margin:10px 0 0;display:grid;grid-template-columns:90px 1fr;gap:6px 10px}
+.rec dt{color:var(--mut);font-size:13px}
+.rec dd{margin:0}
+.rec ol{margin:0;padding-left:18px}
+.risk{color:var(--warn)}
+.row{display:grid;grid-template-columns:34px 120px 1fr;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
+.rank{font-size:20px;font-weight:800;color:var(--acc);text-align:center}
+.row img{width:120px;height:auto;aspect-ratio:9/16;object-fit:cover;border-radius:8px;background:#000}
+.row .tt{font-weight:600;margin-bottom:4px;word-break:break-all}
+.meta{color:var(--mut);font-size:13px}
+.big{color:var(--hot);font-weight:700}
+.links a{color:#7cc4ff;margin-right:12px;font-size:13px}
+.note{color:var(--mut);font-size:12.5px;margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
+.empty{color:var(--mut);padding:30px;text-align:center}
+@media(max-width:560px){.row{grid-template-columns:28px 90px 1fr}.row img{width:90px}.rec dl{grid-template-columns:70px 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>아침 떡상 탑10 + 추천 3개</h1>
+<div class="sub" id="sub">불러오는 중...</div>
+<div class="bar">
+<select id="dates" aria-label="날짜 선택"></select>
+<a class="btn" href="index.html">총감독 대시보드로</a>
+</div>
+<div id="out"><div class="empty">불러오는 중...</div></div>
+<div class="note" id="note"></div>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const el = (tag, attrs = {}, kids = []) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) { if (k === 'text') e.textContent = v; else e.setAttribute(k, v); }
+  for (const c of [].concat(kids)) if (c) e.append(c);
+  return e;
+};
+const safeUrl = u => (typeof u === 'string' && /^https:\/\/(www\.)?(youtube\.com|youtu\.be|i\.ytimg\.com)\//.test(u)) ? u : '#';
+const fmt = n => (n == null ? '-' : Number(n).toLocaleString('ko-KR'));
+function render(d) {
+  const out = $('#out'); out.replaceChildren();
+  $('#sub').textContent = d.date + ' 기준 / 최근 7일 / 주제 지정 없이 28개 분야 / 만든 시각 ' + (d.generated || '-');
+  out.append(el('h2', {text: '오늘의 추천 3개'}));
+  (d.recommendations || []).forEach((r, i) => {
+    const st = el('ol'); (r.structure || []).forEach(s => st.append(el('li', {text: s})));
+    const dl = el('dl');
+    const add = (k, v, cls) => { if (v) { dl.append(el('dt', {text: k}), el('dd', cls ? {class: cls, text: v} : {text: v})); } };
+    add('소재', r.material); add('첫 3초', r.hook3s);
+    if ((r.structure || []).length) { dl.append(el('dt', {text: '구성 4단'}), el('dd', {}, st)); }
+    add('왜 추천', r.why); add('위험', r.risks, 'risk'); add('확인할 것', r.check);
+    out.append(el('div', {class: 'rec'}, [
+      el('div', {}, [el('span', {class: 'tag', text: '추천 ' + (i + 1)}), el('span', {class: 'tag', text: r.topic || ''})]),
+      el('div', {class: 't', text: r.title || r.topic || ''}), dl
+    ]));
+  });
+  out.append(el('h2', {text: '탑10 (구독자 대비 조회수 배수 순)'}));
+  (d.top10 || []).forEach(v => {
+    const img = el('img', {src: safeUrl(v.thumb), alt: '', loading: 'lazy'});
+    const med = v.x_median ? ' / 이 채널 평소 대비 ' + v.x_median + '배' : '';
+    const info = el('div', {}, [
+      el('div', {class: 'tt', text: v.title}),
+      el('div', {class: 'meta'}, [el('span', {class: 'tag', text: v.kw || ''}), document.createTextNode('조회 ' + fmt(v.views) + ' / 구독 ' + fmt(v.subs) + ' / ' + (v.sec || '-') + '초 / ' + (v.pub || ''))]),
+      el('div', {class: 'meta'}, [el('span', {class: 'big', text: '구독자의 ' + fmt(v.ratio) + '배'}), document.createTextNode(med)]),
+      el('div', {class: 'meta', text: '대표 채널: ' + (v.channel || '-') + ' (구독 ' + fmt(v.subs) + ')'}),
+      el('div', {class: 'links'}, [el('a', {href: safeUrl(v.url), target: '_blank', rel: 'noopener', text: '영상 보기'}), el('a', {href: safeUrl(v.channel_url), target: '_blank', rel: 'noopener', text: '채널 보기'})])
+    ]);
+    out.append(el('div', {class: 'row'}, [el('div', {class: 'rank', text: v.rank}), img, info]));
+  });
+  $('#note').textContent = d.note || '숫자는 구독자 수백 명 채널 기준이라 영상과 댓글로 진위를 확인해야 합니다. 제목과 구성은 참고용이고 대본과 화면은 새로 만들어야 합니다.';
+}
+async function load(name) {
+  try {
+    const r = await fetch(name + '?t=' + Date.now()); if (!r.ok) throw new Error(r.status);
+    render(await r.json());
+  } catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '리포트를 불러오지 못했습니다: ' + e.message})); }
+}
+(async () => {
+  try {
+    const r = await fetch('morning/index.json?t=' + Date.now()); const idx = await r.json();
+    const sel = $('#dates');
+    (idx.dates || []).forEach(x => sel.append(el('option', {value: x, text: x})));
+    sel.onchange = () => load('morning/' + sel.value + '.json');
+    if ((idx.dates || []).length) { sel.value = idx.dates[0]; load('morning/' + idx.dates[0] + '.json'); }
+    else $('#out').replaceChildren(el('div', {class: 'empty', text: '아직 리포트가 없습니다. 내일 아침 7시 30분에 첫 리포트가 올라옵니다.'}));
+  } catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '목록을 불러오지 못했습니다: ' + e.message})); }
+})();
+</script>
+</body>
+</html>

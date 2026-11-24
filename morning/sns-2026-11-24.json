@@ -1,0 +1,51 @@
+{
+ "date": "2026-11-24",
+ "collected_at": "2026-11-24T21:55:00+09:00",
+ "collector": "pickle-0won/1.0",
+ "cost_usd": 0.0,
+ "note": "완전 0원 2종(스레드 공개 검색 + 틱톡 Creative Center KR). 로그인·유료 API 없이 수집.",
+ "platforms": {
+  "threads": {
+   "mode": "web_search",
+   "query": "한국",
+   "source_url": "https://www.threads.com/search?q=%ED%95%9C%EA%B5%AD",
+   "collected_at": "2026-11-24T21:53:00+09:00",
+   "signal": "수집원: threads.com 공개 검색 · 로그아웃 첫 화면 · 기본 정렬(관련도) 18건을 좋아요 순으로 재정렬",
+   "note": "관련도 순이라 과거 글(2024~2026)이 섞여 있다. 아래로 더 내리면 로그인 벽. 하루 2~4회, 사람 속도로만 읽을 것.",
+   "items": [
+    {"rank": 1, "author": "osukguri", "date": "2025-04-04", "text": "축하해 한국", "likes": 7100, "likes_label": "7.1천", "replies": 335, "reposts": 61, "shares": 18, "url": "https://www.threads.com/@osukguri/post/DIAgTJmyrZE"},
+    {"rank": 2, "author": "kureha_nakagawa", "date": "2026-03-10", "text": "한국에 왔어 🇰🇷", "likes": 1700, "likes_label": "1.7천", "replies": 129, "reposts": 11, "shares": 6, "url": "https://www.threads.com/@kureha_nakagawa/post/DVs3glnie8G"},
+    {"rank": 3, "author": "miya3302", "date": "2025-08-07", "text": "한국 떠나는 삼성전자", "likes": 989, "replies": 38, "reposts": 54, "shares": 43, "url": "https://www.threads.com/@miya3302/post/DNDEIQnhylq"},
+    {"rank": 4, "author": "marketerdesigner", "date": "2026-01-08", "text": "한국인은", "likes": 852, "replies": 114, "reposts": 25, "url": "https://www.threads.com/@marketerdesigner/post/DTOKNUhEpqG"},
+    {"rank": 5, "author": "hikari__0301", "date": "2026-07-10", "text": "한국어는 어렵다...", "likes": 661, "replies": 112, "reposts": 3, "shares": 2, "url": "https://www.threads.com/@hikari__0301/post/DamLZbgmn5N"},
+    {"rank": 6, "author": "___rn.0610", "date": "2026-02-23", "text": "한국에 왔어🇰🇷", "likes": 491, "replies": 48, "reposts": 2, "url": "https://www.threads.com/@___rn.0610/post/DVGqG_6Eblt"},
+    {"rank": 7, "author": "lydhwa", "date": "2025-12-18", "text": "한국이요", "likes": 491, "replies": 7, "reposts": 2, "shares": 17, "url": "https://www.threads.com/@lydhwa/post/DSZ9hUvjFlu"},
+    {"rank": 8, "author": "wdhnlna", "date": "2024-09-06", "text": "한국에서 살까", "likes": 335, "replies": 17, "reposts": 1, "url": "https://www.threads.com/@wdhnlna/post/C_k_IsuyM7y"},
+    {"rank": 9, "author": "raoulteacher", "date": "2025-06-28", "text": "ㅡ한국 지형ㅡ", "likes": 280, "replies": 7, "reposts": 13, "shares": 9, "url": "https://www.threads.com/@raoulteacher/post/DLbCHZfTyDi"},
+    {"rank": 10, "author": "freedom_1948", "date": "2026-09-28", "text": "대한민국의 주적은?", "likes": 240, "replies": 178, "reposts": 8, "shares": 2, "url": "https://www.threads.com/@freedom_1948/post/Dd1J8LvgfCY"},
+    {"rank": 11, "author": "_rrxny_", "date": "2025-09-02", "text": "일본이게 한국이게 😆", "likes": 209, "replies": 39, "reposts": 1, "shares": 9, "url": "https://www.threads.com/@_rrxny_/post/DOGQ0Wrjzzb"},
+    {"rank": 12, "author": "aiue__o__o", "date": "2025-12-18", "text": "한국에 왔어용~!!", "likes": 204, "replies": 47, "url": "https://www.threads.com/@aiue__o__o/post/DSZptSzE6cZ"},
+    {"rank": 13, "author": "_joh_ha_", "date": "2026-07-14", "text": "어디가 한국일까?", "likes": 187, "replies": 42, "reposts": 37, "url": "https://www.threads.com/@_joh_ha_/post/DavgL-kAcHZ"},
+    {"rank": 14, "author": "_hngthhu.pipy_", "date": "2026-08-11", "text": "한국🇰🇷💗🇻🇳", "likes": 143, "replies": 13, "url": "https://www.threads.com/@_hngthhu.pipy_/post/Db4qi_tlNfb"},
+    {"rank": 15, "author": "104ken_0128", "date": "2026-07-19", "text": "韓国🇰🇷한국, 안녕하세요🫣", "likes": 94, "replies": 5, "reposts": 1, "url": "https://www.threads.com/@104ken_0128/post/Da91fBbmP7e"},
+    {"rank": 16, "author": "rksud_000", "date": "2026-10-26", "text": "한국임", "likes": 66, "replies": 17, "reposts": 1, "url": "https://www.threads.com/@rksud_000/post/De9TG3iE_JT"},
+    {"rank": 17, "author": "lalalanuit", "date": "2025-09-07", "text": "한국인 같은데? (인용: potashynn)", "likes": 39, "replies": 39, "reposts": 1, "url": "https://www.threads.com/@lalalanuit/post/DOTW8ujk98u"},
+    {"rank": 18, "author": "nnhu.07", "date": "2026-11-22", "text": "#한국 🇰🇷", "likes": 33, "replies": 2, "reposts": 2, "url": "https://www.threads.com/@nnhu.07/post/DgAWf6doyeD"}
+   ]
+  },
+  "tiktok": {
+   "mode": "creative_center",
+   "country": "KR",
+   "period": "7d",
+   "source_url": "https://ads.tiktok.com/creative/creativeCenter/trends/hashtag?countryCode=KR&period=7&region=KR",
+   "collected_at": "2026-11-24T21:54:00+09:00",
+   "signal": "수집원: TikTok Creative Center (KR · 최근 7일) · 로그아웃 상태 · 순위 1~3위만 무료",
+   "note": "4위부터는 로그인 필요(View more → Log in). 업종 필터 16개를 돌면 보드당 3개씩 더 확보 가능.",
+   "items": [
+    {"rank": 1, "tag": "#demonslayer", "posts": 29200, "posts_label": "29.2K", "views": 6100000, "views_label": "6.1M", "industries": ["Games", "News & Entertainment"], "creators": ["ANIMECreate", "Real Paperdoll", "Raizen"], "url": "https://www.tiktok.com/tag/demonslayer"},
+    {"rank": 2, "tag": "#animeedit", "posts": 28800, "posts_label": "28.8K", "views": 12000000, "views_label": "12M", "industries": ["News & Entertainment"], "creators": ["Movie Bite 🎬", "elditnam", "Shin"], "url": "https://www.tiktok.com/tag/animeedit"},
+    {"rank": 3, "tag": "#jujutsukaisen", "posts": 28400, "posts_label": "28.4K", "views": 6800000, "views_label": "6.8M", "industries": ["Games", "News & Entertainment"], "creators": ["Aby", "𝕔𝕠𝕡𝕪𝟙𝟛", "╰‿╯ 𝗫𝗲𝗲 모"], "url": "https://www.tiktok.com/tag/jujutsukaisen"}
+   ]
+  }
+ }
+}

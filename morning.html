@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>아침 떡상 탑10 + 추천 3개</title>
 <style>
-:root{--bg:#0f1218;--card:#181d27;--line:#262d3b;--tx:#e8ecf3;--mut:#8f9bb0;--acc:#ffd600;--hot:#ff7a45;--ok:#4cc38a;--warn:#ff5d5d}
+:root{--bg:#0f1218;--card:#181d27;--line:#262d3b;--tx:#e8ecf3;--mut:#8f9bb0;--acc:#ffd600;--hot:#ff7a45;--ok:#4cc38a;--warn:#ff5d5d;--x:#7cc4ff}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 -apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
 .wrap{max-width:1000px;margin:0 auto;padding:16px}
@@ -31,6 +31,23 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 .links a{color:#7cc4ff;margin-right:12px;font-size:13px}
 .note{color:var(--mut);font-size:12.5px;margin-top:18px;border-top:1px solid var(--line);padding-top:10px}
 .empty{color:var(--mut);padding:30px;text-align:center}
+/* 플랫폼 탭 */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;border-bottom:1px solid var(--line);margin:12px 0 14px}
+.tab{flex:0 0 auto;background:var(--card);border:1px solid var(--line);color:var(--mut);border-radius:99px;padding:8px 15px;font-size:13.5px;cursor:pointer;white-space:nowrap;font-family:inherit}
+.tab.on{background:var(--acc);border-color:var(--acc);color:#141414;font-weight:800}
+.pane{display:none}
+.pane.on{display:block}
+.signal{background:#151b26;border-left:4px solid var(--x);border-radius:8px;padding:10px 12px;font-size:13px;margin-bottom:14px;color:var(--tx)}
+.signal b{color:var(--acc)}
+.srow{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:9px}
+.srow .h{display:flex;gap:9px;align-items:baseline}
+.srow .rank{min-width:24px;font-size:14px;text-align:left}
+.srow .who{font-weight:700;font-size:14px}
+.srow .tt{font-weight:600;word-break:break-all;margin-top:3px}
+.srow .meta{font-size:12.5px;margin-top:3px}
+.srow .links a{font-size:12.5px;text-decoration:none}
+.tt-stats{color:var(--hot);font-weight:700}
+.creators{color:var(--mut);font-size:12.5px}
 @media(max-width:560px){.row{grid-template-columns:28px 90px 1fr}.row img{width:90px}.rec dl{grid-template-columns:70px 1fr}}
 </style>
 <!-- 🔒 페이지 잠금 (index.html · morning.html 공통 / localStorage 공유 키) -->
@@ -130,13 +147,35 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 <body>
 <div class="wrap">
 <h1>아침 떡상 탑10 + 추천 3개</h1>
-<div class="sub" id="sub">불러오는 중...</div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab on" data-p="yt" role="tab" aria-selected="true">📺 유튜브 (28분야)</button>
+  <button class="tab" data-p="th" role="tab" aria-selected="false">🧵 스레드 (0원)</button>
+  <button class="tab" data-p="tt" role="tab" aria-selected="false">🎵 틱톡 (1~3위)</button>
+</nav>
+
 <div class="bar">
 <select id="dates" aria-label="날짜 선택"></select>
 <a class="btn" href="index.html">총감독 대시보드로</a>
 </div>
-<div id="out"><div class="empty">불러오는 중...</div></div>
-<div class="note" id="note"></div>
+
+<section class="pane on" id="p-yt">
+  <div class="sub" id="sub">불러오는 중...</div>
+  <div id="out"><div class="empty">불러오는 중...</div></div>
+  <div class="note" id="note"></div>
+</section>
+
+<section class="pane" id="p-th">
+  <div class="signal" id="th-signal">수집원: <b>threads.com 공개 검색</b> · 로그인 없이 첫 화면</div>
+  <div id="th-out"><div class="empty">불러오는 중...</div></div>
+  <div class="note" id="th-note"></div>
+</section>
+
+<section class="pane" id="p-tt">
+  <div class="signal" id="tt-signal">수집원: <b>TikTok Creative Center (KR · 최근 7일)</b> · 로그아웃 상태 · 순위 1~3위만 무료</div>
+  <div id="tt-out"><div class="empty">불러오는 중...</div></div>
+  <div class="note" id="tt-note"></div>
+</section>
 </div>
 <script>
 const $ = s => document.querySelector(s);
@@ -146,8 +185,11 @@ const el = (tag, attrs = {}, kids = []) => {
   for (const c of [].concat(kids)) if (c) e.append(c);
   return e;
 };
-const safeUrl = u => (typeof u === 'string' && /^https:\/\/(www\.)?(youtube\.com|youtu\.be|i\.ytimg\.com)\//.test(u)) ? u : '#';
+const safeUrl = u => (typeof u === 'string' && /^https:\/\/(www\.)?(youtube\.com|youtu\.be|i\.ytimg\.com|threads\.com|www\.threads\.com|tiktok\.com|www\.tiktok\.com)\//.test(u)) ? u : '#';
 const fmt = n => (n == null ? '-' : Number(n).toLocaleString('ko-KR'));
+const num = (v, label) => label || fmt(v);
+
+/* ---------------- 유튜브 (기존 그대로) ---------------- */
 function render(d) {
   const out = $('#out'); out.replaceChildren();
   $('#sub').textContent = d.date + ' 기준 / 최근 7일 / 주제 지정 없이 28개 분야 / 만든 시각 ' + (d.generated || '-');
@@ -179,22 +221,108 @@ function render(d) {
   });
   $('#note').textContent = d.note || '숫자는 구독자 수백 명 채널 기준이라 영상과 댓글로 진위를 확인해야 합니다. 제목과 구성은 참고용이고 대본과 화면은 새로 만들어야 합니다.';
 }
-async function load(name) {
-  try {
-    const r = await fetch(name + '?t=' + Date.now()); if (!r.ok) throw new Error(r.status);
-    render(await r.json());
-  } catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '리포트를 불러오지 못했습니다: ' + e.message})); }
+
+/* ---------------- 스레드 ---------------- */
+function renderThreads(d) {
+  const out = $('#th-out'); out.replaceChildren();
+  const p = d && d.platforms && d.platforms.threads;
+  if (!p || !(p.items || []).length) {
+    $('#th-signal').innerHTML = '수집원: <b>threads.com 공개 검색</b> · 로그인 없이 첫 화면';
+    out.append(el('div', {class: 'empty', text: '이 날짜의 스레드 수집 데이터가 없습니다. 수집기가 아침 7시 30분에 돌면 채워집니다.'}));
+    $('#th-note').textContent = '';
+    return;
+  }
+  $('#th-signal').innerHTML = '';
+  $('#th-signal').append(
+    el('b', {text: 'threads.com 공개 검색'}),
+    document.createTextNode(' · 검색어 "' + (p.query || '') + '" · 무료 ' + (p.items || []).length + '건' + (p.collected_at ? ' · 수집 ' + p.collected_at.slice(0, 16).replace('T', ' ') : ''))
+  );
+  (p.items || []).forEach(it => {
+    const stats = el('div', {class: 'meta'}, [
+      el('span', {class: 'tt-stats', text: '좋아요 ' + num(it.likes, it.likes_label)}),
+      document.createTextNode(' · 답글 ' + fmt(it.replies) + ' · 리포스트 ' + fmt(it.reposts) + (it.shares ? ' · 공유 ' + fmt(it.shares) : ''))
+    ]);
+    out.append(el('div', {class: 'srow'}, [
+      el('div', {class: 'h'}, [el('span', {class: 'rank', text: '#' + (it.rank || '')}), el('span', {class: 'who', text: '@' + (it.author || '')}), el('span', {class: 'meta', text: it.date || ''})]),
+      el('div', {class: 'tt', text: it.text || ''}),
+      stats,
+      el('div', {class: 'links'}, [el('a', {href: safeUrl(it.url), target: '_blank', rel: 'noopener', text: '원문 열기 ↗'})])
+    ]));
+  });
+  $('#th-note').textContent = p.note || '';
+}
+
+/* ---------------- 틱톡 ---------------- */
+function renderTiktok(d) {
+  const out = $('#tt-out'); out.replaceChildren();
+  const p = d && d.platforms && d.platforms.tiktok;
+  if (!p || !(p.items || []).length) {
+    $('#tt-signal').innerHTML = '수집원: <b>TikTok Creative Center (KR · 최근 7일)</b> · 로그아웃 상태 · 순위 1~3위만 무료';
+    out.append(el('div', {class: 'empty', text: '이 날짜의 틱톡 수집 데이터가 없습니다. 수집기가 아침 7시 30분에 돌면 채워집니다.'}));
+    $('#tt-note').textContent = '';
+    return;
+  }
+  $('#tt-signal').innerHTML = '';
+  $('#tt-signal').append(
+    el('b', {text: 'TikTok Creative Center (KR · 최근 7일)'}),
+    document.createTextNode(' · 로그아웃 · ' + (p.collected_at ? '수집 ' + p.collected_at.slice(0, 16).replace('T', ' ') : ''))
+  );
+  (p.items || []).forEach(it => {
+    out.append(el('div', {class: 'srow'}, [
+      el('div', {class: 'h'}, [el('span', {class: 'rank', text: it.rank}), el('span', {class: 'tt', style: 'margin-top:0;font-size:16px', text: it.tag || ''})]),
+      el('div', {class: 'meta'}, [document.createTextNode('게시물 '), el('span', {class: 'tt-stats', text: num(it.posts, it.posts_label)}), document.createTextNode(' · 조회 '), el('span', {class: 'tt-stats', text: num(it.views, it.views_label)})]),
+      el('div', {class: 'creators', text: '업종: ' + ((it.industries || []).join(' / ') || '-')}),
+      el('div', {class: 'creators', text: '상위 크리에이터: ' + ((it.creators || []).join(' · ') || '-')}),
+      el('div', {class: 'links'}, [el('a', {href: safeUrl(it.url), target: '_blank', rel: 'noopener', text: '태그 열기 ↗'})])
+    ]));
+  });
+  $('#tt-note').textContent = p.note || '';
+}
+
+/* ---------------- 로딩 ---------------- */
+async function getJson(url) {
+  const r = await fetch(url + '?t=' + Date.now());
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function loadYt(date) {
+  try { render(await getJson('morning/' + date + '.json')); }
+  catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '이 날짜의 유튜브 리포트가 없습니다 (' + e.message + ')'})); $('#sub').textContent = date + ' · 유튜브 리포트 없음'; }
+}
+async function loadSns(date) {
+  let d = null;
+  try { d = await getJson('morning/sns-' + date + '.json'); } catch (e) { d = null; }
+  renderThreads(d);
+  renderTiktok(d);
 }
 (async () => {
-  try {
-    const r = await fetch('morning/index.json?t=' + Date.now()); const idx = await r.json();
-    const sel = $('#dates');
-    (idx.dates || []).forEach(x => sel.append(el('option', {value: x, text: x})));
-    sel.onchange = () => load('morning/' + sel.value + '.json');
-    if ((idx.dates || []).length) { sel.value = idx.dates[0]; load('morning/' + idx.dates[0] + '.json'); }
-    else $('#out').replaceChildren(el('div', {class: 'empty', text: '아직 리포트가 없습니다. 내일 아침 7시 30분에 첫 리포트가 올라옵니다.'}));
-  } catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '목록을 불러오지 못했습니다: ' + e.message})); }
+  let ytDates = [], snsDates = [];
+  try { ytDates = (await getJson('morning/index.json')).dates || []; } catch (e) {}
+  try { snsDates = (await getJson('morning/sns-index.json')).dates || []; } catch (e) {}
+  const dates = Array.from(new Set([].concat(ytDates, snsDates))).sort().reverse();
+  const sel = $('#dates');
+  dates.forEach(x => sel.append(el('option', {value: x, text: x})));
+  if (!dates.length) {
+    $('#out').replaceChildren(el('div', {class: 'empty', text: '아직 리포트가 없습니다. 내일 아침 7시 30분에 첫 리포트가 올라옵니다.'}));
+    return;
+  }
+  sel.value = dates[0];
+  sel.onchange = () => { loadYt(sel.value); loadSns(sel.value); };
+  loadYt(dates[0]);
+  loadSns(dates[0]);
 })();
+
+/* ---------------- 탭 ---------------- */
+document.querySelectorAll('.tab').forEach(function (t) {
+  t.addEventListener('click', function () {
+    document.querySelectorAll('.tab').forEach(function (x) { x.classList.remove('on'); x.setAttribute('aria-selected', 'false'); });
+    document.querySelectorAll('.pane').forEach(function (x) { x.classList.remove('on'); });
+    t.classList.add('on');
+    t.setAttribute('aria-selected', 'true');
+    var p = document.getElementById('p-' + t.dataset.p);
+    if (p) p.classList.add('on');
+  });
+});
 </script>
 </body>
 </html>

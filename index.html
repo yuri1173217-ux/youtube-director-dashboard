@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>100만 유튜버 총감독 대시보드 v4.1</title>
+<title>100만 유튜버 총감독 대시보드 v4.2</title>
 <style>
   :root {
     --bg: #0b0f19;
@@ -93,6 +93,15 @@
   }
   .now-label { font-size: 11px; font-weight: 800; color: var(--green); margin-bottom: 4px; }
   .now-text { font-size: 13px; color: #ecfdf5; font-weight: 600; }
+
+  .must-box {
+    margin-top: 12px;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.42);
+    border-radius: 10px;
+    padding: 10px 12px;
+  }
+  .must-label { font-size: 11px; font-weight: 800; color: var(--gold); margin-bottom: 6px; }
 
   .detail-block { margin-top: 12px; }
   .detail-label { font-size: 11px; font-weight: 700; color: var(--blue); margin-bottom: 5px; }
@@ -219,7 +228,7 @@
 <body>
 
 <div class="header">
-  <span class="badge">v4.1 · 떡상 Top 10 실시간 연동</span>
+  <span class="badge">v4.2 · 4번 카메라 무빙 필수</span>
   <h1>100만 유튜버 에이전트 맵</h1>
   <p>에이전트를 누르면 지금 쓰고 있는 툴과 방법이 바로 뜹니다</p>
 </div>
@@ -444,15 +453,25 @@
             <li><b>사운드·호흡 큐</b> — 장면 전환마다 효과음(탁/슉)과 BGM 강약 포인트 지정</li>
           </ul>
         </div>
+        <div class="must-box">
+          <div class="must-label">🎥 카메라 무빙 필수 지정 — 모든 컷 예외 없음</div>
+          <ul class="detail-list">
+            <li><b>컷마다 무빙 1개 명시</b> — 줌인/줌아웃 · 항공뷰(하이앵글) · 드론(조감·상승) · 궤도 회전(오빗) · 패닝 · 트래킹 · 달리인 중 하나를 타임코드 옆에 반드시 적는다</li>
+            <li><b>정지 슬라이드 금지</b> — 정지 이미지를 반복해 컷을 채우지 않는다. 정지가 꼭 필요하면 아주 느린 푸시인·배경 흐름 같은 미세 무빙을 반드시 넣는다</li>
+            <li><b>키워드 치트시트 활용</b> — <code>미니맥스H3_주제별_카메라키워드_치트시트</code>에서 주제별 영어 키워드(예: <code>[Push in, Medium close-up]</code>)를 그대로 큐시트에 적는다</li>
+            <li><b>실패 조합 회피</b> — 한 컷에 무빙 2개 이상(오빗+줌인) · 이미지 1장 기반 360도 회전 · 쇼핑/안내 영상의 더치앵글은 금지</li>
+          </ul>
+        </div>
         <div class="detail-block">
           <div class="detail-label">3. 산출물</div>
           <ul class="detail-list">
-            <li><b>타임코드별 제작 큐시트</b> — 장면 소스 · 모션 방식 · 도표 수치 · 자막 · 효과음/BGM</li>
+            <li><b>타임코드별 제작 큐시트</b> — 장면 소스 · <b>카메라 무빙(필수)</b> · 모션 방식 · 도표 수치 · 자막 · 효과음/BGM</li>
           </ul>
         </div>
         <div class="detail-block">
           <div class="detail-label">이 일에 쓰는 이름표</div>
           <div class="tool-tags">
+            <span class="tool-tag hl"><b>🎥 H3 카메라 키워드 치트시트</b> 컷별 무빙 지정</span>
             <span class="tool-tag"><b>📊 파이썬·Manim</b> 도표·숫자 카드</span>
             <span class="tool-tag"><b>✂️ CapCut·ffmpeg</b> 컷 전환·자막 합성</span>
             <span class="tool-tag"><b>📐 쇼츠 안전 영역</b> UI 겹침 검수</span>
@@ -868,7 +887,7 @@
 </div>
 
 <div class="footer">
-  v4.1 · 2026-11-24 · 떡상 Top 10 실시간 연동 · 1~6번 기준표 완전체 확정<br>
+  v4.2 · 2026-11-24 · 떡상 Top 10 실시간 연동 · 1~6번 기준표 완전체 확정 · 4번 카메라 무빙 필수 지정 추가<br>
   틴이님 전용 · 검색 노출 안 함
 </div>
 

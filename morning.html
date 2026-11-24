@@ -238,9 +238,13 @@ function renderThreads(d) {
     document.createTextNode(' · 검색어 "' + (p.query || '') + '" · 무료 ' + (p.items || []).length + '건' + (p.collected_at ? ' · 수집 ' + p.collected_at.slice(0, 16).replace('T', ' ') : ''))
   );
   (p.items || []).forEach(it => {
+    const rest = [];
+    if (it.replies != null) rest.push('답글 ' + fmt(it.replies));
+    if (it.reposts != null) rest.push('리포스트 ' + fmt(it.reposts));
+    if (it.shares != null) rest.push('공유 ' + fmt(it.shares));
     const stats = el('div', {class: 'meta'}, [
       el('span', {class: 'tt-stats', text: '좋아요 ' + num(it.likes, it.likes_label)}),
-      document.createTextNode(' · 답글 ' + fmt(it.replies) + ' · 리포스트 ' + fmt(it.reposts) + (it.shares ? ' · 공유 ' + fmt(it.shares) : ''))
+      document.createTextNode(rest.length ? ' · ' + rest.join(' · ') : '')
     ]);
     out.append(el('div', {class: 'srow'}, [
       el('div', {class: 'h'}, [el('span', {class: 'rank', text: '#' + (it.rank || '')}), el('span', {class: 'who', text: '@' + (it.author || '')}), el('span', {class: 'meta', text: it.date || ''})]),
@@ -287,7 +291,11 @@ async function getJson(url) {
 }
 async function loadYt(date) {
   try { render(await getJson('morning/' + date + '.json')); }
-  catch (e) { $('#out').replaceChildren(el('div', {class: 'empty', text: '이 날짜의 유튜브 리포트가 없습니다 (' + e.message + ')'})); $('#sub').textContent = date + ' · 유튜브 리포트 없음'; }
+  catch (e) {
+    $('#out').replaceChildren(el('div', {class: 'empty', text: '이 날짜의 유튜브 리포트가 없습니다 (' + e.message + ')'}));
+    $('#sub').textContent = date + ' · 유튜브 리포트 없음';
+    $('#note').textContent = '';
+  }
 }
 async function loadSns(date) {
   let d = null;

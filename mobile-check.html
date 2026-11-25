@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>모바일 폭 확인</title>
+<style>body{margin:0;background:#000}iframe{width:390px;height:844px;border:0;display:block}</style></head>
+<body>
+<iframe id="f" src="./morning.html"></iframe>
+<script>
+const mock={date:"2026-11-26",generated:"2026-11-26T07:34:10+09:00",stats:{scanned_channels:742,excluded_lottery:128,passed:37},
+channels:[
+{rank:1,name:"시니어 건강백과",url:"https://www.youtube.com/@senior-health",subs:48200,video_count:213,
+ consistency:{recent_n:12,hit_30k:9,median_views:74000,hit_rate:75,label:"최근 12개 중 9개가 3만 회 이상"},
+ format:{badges:["8분+ 롱폼","쇼츠+롱폼"],long_ratio:0.75,avg_sec:612},
+ niche:{name:"건강·시니어(5060)",cpm_grade:"A"},ai_made:{possible:true},
+ top_video:{title:"60대 이후 무릎이 아프면 절대 하지 말아야 할 운동 5가지",views:412000,sec:734,published:"2026-11-22",url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",thumb:"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"},
+ eye_ear:{hook:"무릎 X-ray 사진을 3초 만에 띄우고 '이거 하면 망칩니다' 자막",cut_pace:"8초당 1컷",visual_style:"AI 실사풍 이미지 + 빨간 화살표",voice_tone:"50대 남성 차분한 해설",bgm_mood:"뉴스형",twist_idea:"운동 3개만 남기고 다음 편 예고"}},
+{rank:2,name:"글로벌 이슈 다이제스트",url:"https://www.youtube.com/@global-issue",subs:12900,video_count:88,
+ consistency:{recent_n:10,hit_30k:5,median_views:91000,hit_rate:50},
+ format:{badges:["8분+ 롱폼"],long_ratio:0.92,avg_sec:845},
+ niche:{name:"역사·글로벌 무대사",cpm_grade:"B"},ai_made:{possible:true,label:"AI 1인 제작 가능(지도)"},
+ top_video:{title:"소련이 마지막까지 숨겼던 지도 한 장",views:1280000,sec:902,published:"2026-11-19",url:"https://www.youtube.com/watch?v=dQw4w9WgXcQ",thumb:"https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg"}}]};
+document.getElementById('f').onload=function(){
+  setTimeout(function(){
+    const w=this.contentWindow,d=this.contentDocument;
+    const g=d.getElementById('yd-gate'); if(g)g.remove();
+    d.documentElement.classList.remove('yd-locked');
+    const t=d.querySelector('.tab[data-p="mc"]'); if(t)t.click();
+    w.renderMoney(mock);
+    const de=d.documentElement;
+    const box=document.createElement('div');
+    box.style.cssText='position:fixed;left:0;bottom:0;z-index:9999;background:#ffd600;color:#000;font:12px monospace;padding:2px 6px';
+    box.textContent='viewport '+de.clientWidth+'px · scrollWidth '+de.scrollWidth+'px · overflow '+(de.scrollWidth>de.clientWidth?'YES':'none');
+    d.body.appendChild(box);
+  }.bind(this),1800);
+};
+</script>
+</body></html>

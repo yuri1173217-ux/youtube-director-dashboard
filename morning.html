@@ -48,6 +48,36 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 .srow .links a{font-size:12.5px;text-decoration:none}
 .tt-stats{color:var(--hot);font-weight:700}
 .creators{color:var(--mut);font-size:12.5px}
+/* 💰 돈 되는 채널 */
+.mcard{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--acc);border-radius:12px;padding:12px 12px 10px;margin-bottom:12px}
+.mcard .hd{display:flex;gap:8px;align-items:flex-start}
+.mrank{font-size:17px;font-weight:800;color:var(--acc);min-width:26px;text-align:center;line-height:1.3}
+.mname{font-weight:800;font-size:15.5px;line-height:1.35;word-break:break-word}
+.mname a{color:var(--tx);text-decoration:none}
+.mname a:hover{color:var(--x)}
+.mscore{margin-left:auto;text-align:right;flex:0 0 auto;padding-left:6px}
+.mscore b{display:block;font-size:19px;font-weight:800;color:var(--ok);line-height:1.1}
+.mscore span{font-size:10.5px;color:var(--mut);white-space:nowrap}
+.badges{display:flex;gap:5px;flex-wrap:wrap;margin:9px 0 0}
+.bdg{font-size:11.5px;font-weight:700;border-radius:99px;padding:2px 9px;border:1px solid var(--line);color:var(--mut);background:#121722;line-height:1.6}
+.bdg.fmt{color:#ffd600;border-color:#5b4c00;background:#2a2400}
+.bdg.niche{color:#7cc4ff;border-color:#1f3d55;background:#0f2230}
+.bdg.ai-true{color:#4cc38a;border-color:#2b4a38;background:#10231a}
+.bdg.ai-false{color:#ff7a45;border-color:#4a2c1e;background:#241610}
+.mstats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
+.mstat{background:#121722;border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-width:0}
+.mstat .k{font-size:10.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mstat .v{font-size:14px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mbar{height:5px;background:#121722;border:1px solid var(--line);border-radius:99px;margin-top:7px;overflow:hidden}
+.mbar i{display:block;height:100%;background:linear-gradient(90deg,var(--ok),var(--acc))}
+.mbar-t{font-size:10.5px;color:var(--mut);margin-top:4px}
+.topv{display:flex;gap:9px;background:#121722;border:1px solid var(--line);border-radius:8px;padding:8px;margin-top:9px}
+.topv img{width:72px;height:40px;object-fit:cover;border-radius:5px;background:#000;flex:0 0 auto}
+.topv .tt{font-size:13px;font-weight:700;line-height:1.35;word-break:break-word}
+.topv .meta{font-size:11.5px;margin-top:2px}
+.topv a{text-decoration:none}
+.mhead{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.mhead select{padding:6px 9px;font-size:13px}
 /* 🎧👁️ 눈·귀 해부표 (eye_ear) 토글 */
 .ee{margin-top:10px;background:#131c17;border:1px solid #2b4a38;border-left:4px solid var(--ok);border-radius:8px;padding:0 10px}
 .ee summary{cursor:pointer;padding:9px 2px;font-size:13px;font-weight:800;color:var(--ok);list-style:none;display:flex;align-items:center;gap:5px}
@@ -162,6 +192,7 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
   <button class="tab on" data-p="yt" role="tab" aria-selected="true">📺 유튜브</button>
   <button class="tab" data-p="th" role="tab" aria-selected="false">🧵 스레드 (0원)</button>
   <button class="tab" data-p="tt" role="tab" aria-selected="false">🎵 틱톡 (1~3위)</button>
+  <button class="tab" data-p="mc" role="tab" aria-selected="false">💰 돈 되는 채널</button>
 </nav>
 
 <div class="bar">
@@ -185,6 +216,13 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
   <div class="signal" id="tt-signal">수집원: <b>TikTok Creative Center (KR · 최근 7일)</b> · 로그아웃 상태 · 순위 1~3위만 무료</div>
   <div id="tt-out"><div class="empty">불러오는 중...</div></div>
   <div class="note" id="tt-note"></div>
+</section>
+
+<section class="pane" id="p-mc">
+  <div class="signal" id="mc-signal">수집원: <b>YouTube Data API v3 (무료)</b> · 구독 1,000~20만 · 복권 채널(1개만 터짐) 제외</div>
+  <div class="mhead"><select id="mc-dates" aria-label="돈 되는 채널 날짜 선택" style="display:none"></select></div>
+  <div id="mc-out"><div class="empty">불러오는 중...</div></div>
+  <div class="note" id="mc-note"></div>
 </section>
 </div>
 <style>
@@ -361,6 +399,131 @@ function renderTiktok(d) {
   $('#tt-note').textContent = p.note || '';
 }
 
+/* ---------------- 💰 돈 되는 채널 ---------------- */
+const mmss = s => { s = Number(s); if (!s) return '-'; const m = Math.floor(s / 60), r = Math.round(s % 60); return m + ':' + ('0' + r).slice(-2); };
+const nz = v => (v === null || v === undefined || v === '' ? null : v);
+const pct = v => (v === null || v === undefined || isNaN(Number(v)) ? null : Math.max(0, Math.min(100, Math.round(Number(v)))));
+function bdg(txt, cls) { return el('span', {class: 'bdg ' + (cls || ''), text: txt}); }
+function mStat(k, v) { return el('div', {class: 'mstat'}, [el('div', {class: 'k', text: k}), el('div', {class: 'v', text: v})]); }
+
+function moneyCard(c, i) {
+  const cons = c.consistency || {};
+  const fmtB = c.format || {};
+  const niche = c.niche || {};
+  const ai = c.ai_made || c.ai || {};
+  const tv = c.top_video || c.topVideo || {};
+  const subs = nz(c.subs) != null ? c.subs : c.subscriber_count;
+  const name = c.name || c.title || '(이름 없음)';
+  const curl = safeUrl(c.url || c.channel_url);
+  const recentN = nz(cons.recent_n);
+  const hit30k = nz(cons.hit_30k);
+  const hitRate = pct(cons.hit_rate != null ? cons.hit_rate : (recentN ? (100 * (hit30k || 0) / recentN) : null));
+
+  const hd = el('div', {class: 'hd'}, [
+    el('span', {class: 'mrank', text: String(c.rank || i)}),
+    el('div', {style: 'min-width:0;flex:1 1 auto'}, [
+      el('div', {class: 'mname'}, [curl !== '#' ? el('a', {href: curl, target: '_blank', rel: 'noopener', text: name}) : el('span', {text: name})]),
+      el('div', {class: 'meta', text: '구독 ' + fmt(subs) + (nz(c.video_count) != null ? ' · 영상 ' + fmt(c.video_count) + '개' : '')})
+    ]),
+    el('div', {class: 'mscore'}, [
+      el('b', {text: hitRate != null ? hitRate + '%' : (nz(c.score) != null ? fmt(Math.round(c.score)) : '-')}),
+      el('span', {text: hitRate != null ? '꾸준함 점수' : '종합 점수'})
+    ])
+  ]);
+
+  const badges = el('div', {class: 'badges'});
+  const fmts = Array.isArray(fmtB.badges) ? fmtB.badges : (fmtB.badge ? [fmtB.badge] : []);
+  fmts.forEach(t => { if (t) badges.append(bdg(String(t), 'fmt')); });
+  if (nz(fmtB.long_ratio) != null) badges.append(bdg('롱폼 ' + Math.round(Number(fmtB.long_ratio) * 100) + '%', 'fmt'));
+  if (niche.name || niche.cpm_grade) badges.append(bdg((niche.name || '분야 미상') + (niche.cpm_grade ? ' · 단가 ' + niche.cpm_grade + '급' : ''), 'niche'));
+  if (ai.possible === true || ai.possible === false) badges.append(bdg(ai.label || (ai.possible ? 'AI 1인 제작 가능' : 'AI 제작 어려움'), ai.possible ? 'ai-true' : 'ai-false'));
+
+  const stats = el('div', {class: 'mstats'}, [
+    mStat('중위 조회수', nz(cons.median_views) != null ? fmt(cons.median_views) : '-'),
+    mStat('3만+ 개수', hit30k == null ? '-' : (recentN != null ? hit30k + ' / ' + recentN : fmt(hit30k))),
+    mStat('영상 길이', nz(fmtB.avg_sec) != null ? mmss(fmtB.avg_sec) : (nz(tv.sec) != null ? mmss(tv.sec) : '-'))
+  ]);
+
+  let bar = null;
+  if (hitRate != null) {
+    bar = el('div', {}, [
+      el('div', {class: 'mbar'}, [el('i', {style: 'width:' + hitRate + '%'})]),
+      el('div', {class: 'mbar-t', text: cons.label || ('최근 ' + (recentN != null ? recentN : '?') + '개 중 ' + (hit30k || 0) + '개가 3만 회 이상')})
+    ]);
+  }
+
+  let topv = null;
+  if (tv.title || tv.url) {
+    const th = safeUrl(tv.thumb);
+    const vurl = safeUrl(tv.url);
+    const bits = [];
+    if (nz(tv.views) != null) bits.push('조회 ' + fmt(tv.views));
+    if (nz(tv.sec) != null) bits.push(mmss(tv.sec));
+    if (tv.published || tv.pub) bits.push(String(tv.published || tv.pub).slice(0, 10));
+    topv = el('div', {class: 'topv'}, [
+      (th !== '#' ? el('img', {src: th, alt: '', loading: 'lazy'}) : null),
+      el('div', {style: 'min-width:0'}, [
+        el('div', {class: 'tt'}, [vurl !== '#' ? el('a', {href: vurl, target: '_blank', rel: 'noopener', text: tv.title || '대표 영상'}) : el('span', {text: tv.title || '대표 영상'})]),
+        el('div', {class: 'meta', text: '최근 대표 영상 · ' + (bits.join(' · ') || '-')})
+      ])
+    ]);
+  }
+
+  return el('div', {class: 'mcard'}, [hd, (badges.childElementCount ? badges : null), stats, bar, topv, eyeEarBox(c.eye_ear || c.eyeEar)]);
+}
+
+function renderMoney(d) {
+  const out = $('#mc-out'); out.replaceChildren();
+  const chs = (d && Array.isArray(d.channels)) ? d.channels : (Array.isArray(d) ? d : []);
+  const st = (d && d.stats) || {};
+  const sig = $('#mc-signal'); sig.replaceChildren();
+  const bits = ['구독 1,000~20만'];
+  if (nz(st.scanned_channels) != null) bits.push('훑은 채널 ' + fmt(st.scanned_channels));
+  if (nz(st.excluded_lottery) != null) bits.push('복권 채널 ' + fmt(st.excluded_lottery) + '개 제외');
+  if (nz(st.passed) != null) bits.push('통과 ' + fmt(st.passed));
+  sig.append(el('b', {text: 'YouTube Data API v3 (무료)'}), document.createTextNode(' · ' + bits.join(' · ')));
+  if (d && d.generated) sig.append(document.createTextNode(' · 수집 ' + String(d.generated).slice(0, 16).replace('T', ' ')));
+  if (!chs.length) {
+    out.append(el('div', {class: 'empty', text: '이 날짜의 수집 결과가 비어 있습니다. (필터를 통과한 채널 0개)'}));
+  } else {
+    chs.forEach((c, i) => out.append(moneyCard(c, i + 1)));
+  }
+  $('#mc-note').textContent = (d && d.note) || '꾸준함 점수 = 최근 10~12개 영상 중 3만 회 이상 터진 비율. 1개만 터진 복권 채널은 이미 제외된 목록입니다.';
+}
+
+function moneyEmpty(why) {
+  const out = $('#mc-out'); out.replaceChildren();
+  $('#mc-signal').replaceChildren(el('b', {text: 'YouTube Data API v3 (무료)'}), document.createTextNode(' · 어사이드 PC 아침 07:30 수집'));
+  out.append(el('div', {class: 'empty'}, [
+    el('div', {text: '어사이드 아침 수집 대기 중 — 첫 실행 후 자동 표시됩니다'}),
+    el('div', {class: 'meta', style: 'margin-top:8px', text: (why ? '(' + why + ')' : '')})
+  ]));
+  $('#mc-note').textContent = '';
+}
+
+async function loadMoney(date) {
+  const out = $('#mc-out');
+  out.replaceChildren(el('div', {class: 'empty', text: '불러오는 중...'}));
+  try {
+    const d = await getJson(date ? 'morning/money-' + date + '.json' : 'morning/money-channels.json');
+    renderMoney(d);
+  } catch (e) {
+    moneyEmpty('morning/' + (date ? 'money-' + date + '.json' : 'money-channels.json') + ' 없음');
+  }
+}
+
+async function initMoney() {
+  const sel = $('#mc-dates');
+  let dates = [];
+  try { dates = ((await getJson('morning/money-index.json')).dates || []).slice().sort().reverse(); } catch (e) {}
+  sel.replaceChildren();
+  dates.forEach(x => sel.append(el('option', {value: x, text: x})));
+  sel.style.display = dates.length > 0 ? '' : 'none';
+  sel.onchange = () => loadMoney(sel.value);
+  if (dates.length) { sel.value = dates[0]; return loadMoney(dates[0]); }
+  return loadMoney(null);
+}
+
 /* ---------------- 로딩 ---------------- */
 async function getJson(url) {
   const r = await fetch(url + '?t=' + Date.now());
@@ -409,6 +572,9 @@ document.querySelectorAll('.tab').forEach(function (t) {
     if (p) p.classList.add('on');
   });
 });
+
+/* 💰 돈 되는 채널 탭 데이터 로드 (어사이드가 올리는 JSON) */
+initMoney();
 </script>
 </body>
 </html>

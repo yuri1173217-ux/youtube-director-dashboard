@@ -508,7 +508,13 @@ async function loadMoney(date) {
   const out = $('#mc-out');
   out.replaceChildren(el('div', {class: 'empty', text: '불러오는 중...'}));
   try {
-    const d = await getJson(date ? 'morning/money-' + date + '.json' : 'morning/money-channels.json');
+    let d;
+    try {
+      d = await getJson(date ? 'morning/money-' + date + '.json' : 'morning/money-channels.json');
+    } catch (e1) {
+      if (!date) throw e1;
+      d = await getJson('morning/money-channels.json'); // 날짜별 파일이 없으면 최신 파일로 대체
+    }
     renderMoney(d);
   } catch (e) {
     moneyEmpty('morning/' + (date ? 'money-' + date + '.json' : 'money-channels.json') + ' 없음');

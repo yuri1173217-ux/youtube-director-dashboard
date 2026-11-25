@@ -187,6 +187,41 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
   <div class="note" id="tt-note"></div>
 </section>
 </div>
+<style>
+.mk-btn{display:block;width:100%;min-height:42px;margin-top:10px;background:rgba(255,122,69,.15);border:1.5px solid rgba(255,122,69,.6);color:#ff7a45;font-weight:700;border-radius:10px;padding:10px;font-size:14px;cursor:pointer;font-family:inherit;text-align:center}
+.mk-msg{font-size:12px;margin-top:6px;color:#8f9bb0}.mk-msg a{color:#ffd600}
+</style>
+<script>
+/* 🎬 이 주제로 제작 — 제작실(studio.html)로 작업 보내기. 실패해도 페이지는 계속 동작 */
+function mkBtn(title, extra) {
+  try {
+    if (!title) return null;
+    var wrap = document.createElement('div');
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'mk-btn'; b.textContent = '🎬 이 주제로 제작';
+    var msg = document.createElement('div'); msg.className = 'mk-msg';
+    b.addEventListener('click', function () {
+      try {
+        var u = (localStorage.getItem('yd-director-url') || '').replace(/\/+$/, ''), k = localStorage.getItem('yd-director-key') || '3188';
+        if (!u) { msg.textContent = '먼저 제작실에서 서버 주소를 넣어 주세요 → '; var a0 = document.createElement('a'); a0.href = './studio.html'; a0.textContent = '제작실 열기'; msg.append(a0); return; }
+        var body = Object.assign({ topic: title, format: 'shorts', channel: '직접입력', source: 'morning' }, extra || {});
+        fetch(u + '/api/jobs', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Director-Key': k }, body: JSON.stringify(body) })
+          .then(function (r) {
+            if (r.status === 401) throw new Error('KEY');
+            if (!r.ok) throw new Error('HTTP');
+            return r.json();
+          })
+          .then(function (j) {
+            msg.textContent = '🎬 제작실로 보냈어요 (대기 ' + (j.position || 1) + '번째) ';
+            var a = document.createElement('a'); a.href = './studio.html#job=' + j.job_id; a.textContent = '제작실에서 보기 →'; msg.append(a);
+            setTimeout(function () { if (msg.firstChild) msg.firstChild.textContent = ''; }, 3000);
+          })
+          .catch(function (e) { msg.textContent = e.message === 'KEY' ? '🔴 비밀번호(3188) 확인' : '🔴 어사이드 PC에 연결하지 못했어요. PC와 터널이 켜져 있는지 확인해 주세요.'; });
+      } catch (e) { msg.textContent = '🔴 오류: ' + e.message; }
+    });
+    wrap.append(b, msg); return wrap;
+  } catch (e) { return null; }
+}
+</script>
 <script>
 const $ = s => document.querySelector(s);
 const el = (tag, attrs = {}, kids = []) => {
@@ -243,7 +278,8 @@ function render(d) {
       el('div', {}, [el('span', {class: 'tag', text: '추천 ' + (i + 1)}), el('span', {class: 'tag', text: r.topic || ''})]),
       el('div', {class: 't', text: r.title || r.topic || ''}), dl,
       (r.benchmark_url ? el('div', {class: 'links'}, [el('a', {href: safeUrl(r.benchmark_url), target: '_blank', rel: 'noopener', text: '▶ 근거 영상 보기 (유튜브)'})]) : null),
-      eyeEarBox(r.eye_ear || r.eyeEar)
+      eyeEarBox(r.eye_ear || r.eyeEar),
+      mkBtn(r.title || r.topic, { channel: '직접입력', format: 'shorts', source: 'morning' })
     ]));
   });
   out.append(el('h2', {text: '탑10 (구독자 대비 조회수 배수 순)'}));
@@ -256,7 +292,8 @@ function render(d) {
       el('div', {class: 'meta'}, [el('span', {class: 'big', text: '구독자의 ' + fmt(v.ratio) + '배'}), document.createTextNode(med)]),
       el('div', {class: 'meta', text: '대표 채널: ' + (v.channel || '-') + ' (구독 ' + fmt(v.subs) + ')'}),
       el('div', {class: 'links'}, [el('a', {href: safeUrl(v.url), target: '_blank', rel: 'noopener', text: '영상 보기'}), el('a', {href: safeUrl(v.channel_url), target: '_blank', rel: 'noopener', text: '채널 보기'})]),
-      eyeEarBox(v.eye_ear || v.eyeEar)
+      eyeEarBox(v.eye_ear || v.eyeEar),
+      mkBtn(v.title, { keyword: v.kw || null, source: 'top10', source_url: v.url || null })
     ]);
     out.append(el('div', {class: 'row'}, [el('div', {class: 'rank', text: v.rank}), img, info]));
   });

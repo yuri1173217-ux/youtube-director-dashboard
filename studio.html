@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🎬 제작실</title>
+<style>
+:root{--bg:#0f1218;--card:#181d27;--line:#262d3b;--tx:#e8ecf3;--mut:#8f9bb0;--acc:#ffd600;--hot:#ff7a45;--ok:#4cc38a;--warn:#ff5d5d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 -apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.wrap{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:8px 0 2px}
+.sub{color:var(--mut);font-size:13px;margin-bottom:12px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px}
+.links a{color:var(--acc);text-decoration:none;font-size:13px;margin-left:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 10px;color:var(--acc)}
+label{display:block;color:var(--mut);font-size:12px;margin:8px 0 3px}
+input,select,textarea{width:100%;background:#0f1218;color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:15px;font-family:inherit}
+textarea{min-height:90px;resize:vertical}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button,a.bt{background:rgba(255,214,0,.14);border:1.5px solid rgba(255,214,0,.5);color:var(--acc);font-weight:700;border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block}
+button.big{width:100%;min-height:46px;margin-top:12px;font-size:16px}
+button.sm{padding:5px 10px;font-size:12px;border-radius:8px}
+button.warn{color:var(--warn);border-color:rgba(255,93,93,.5);background:rgba(255,93,93,.1)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:#777}
+.dot.on{background:var(--ok)}.dot.off{background:var(--warn)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.mut{color:var(--mut);font-size:12px}
+.job .t{font-weight:700;font-size:16px}
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:10px 0 4px}
+.step{background:#222a38;color:var(--mut);font-size:11px;text-align:center;border-radius:6px;padding:5px 2px}
+.step.done{background:rgba(76,195,138,.25);color:var(--ok)}
+.step.cur{background:var(--acc);color:#111;font-weight:700}
+.step.fail{background:var(--warn);color:#fff;font-weight:700}
+.err{color:var(--warn);font-size:13px;margin-top:6px}
+video{width:100%;max-height:60vh;border-radius:10px;background:#000}
+img.th{width:100%;border-radius:10px}
+.sec{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.sec h3{font-size:14px;margin:0 0 8px;color:var(--hot)}
+.copyrow{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.copyrow .txt{flex:1;background:#0f1218;border:1px solid var(--line);border-radius:8px;padding:8px 10px;white-space:pre-wrap;word-break:break-word;font-size:14px}
+details summary{cursor:pointer;color:var(--mut);font-size:13px}
+.hide{display:none}
+</style>
+<!-- 🔒 페이지 잠금 (index.html · morning.html · studio.html 공통 / localStorage 공유 키) -->
+<style>
+  html.yd-locked body { visibility: hidden; }
+  html.yd-locked #yd-gate { visibility: visible; }
+  #yd-gate {
+    position: fixed; inset: 0; z-index: 99999; display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(1200px 500px at 50% -180px, #16203a 0%, #0b0f19 60%) no-repeat, #0b0f19;
+    color: #f1f5f9; padding: 24px 18px; visibility: visible;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  }
+  #yd-gate .yd-card {
+    width: 100%; max-width: 330px; background: #141b2d; border: 1px solid #25314d;
+    border-radius: 18px; padding: 26px 22px 22px; text-align: center;
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+  }
+  #yd-gate .yd-icon { font-size: 26px; line-height: 1; }
+  #yd-gate .yd-title { font-size: 16px; font-weight: 800; margin-top: 10px; letter-spacing: -0.3px; }
+  #yd-gate .yd-sub { font-size: 12.5px; color: #94a3b8; margin-top: 5px; }
+  #yd-gate input {
+    width: 100%; margin-top: 18px; background: #0b0f19; border: 1.5px solid #25314d;
+    border-radius: 12px; padding: 13px 14px; color: #f1f5f9; font-size: 20px; font-weight: 700;
+    letter-spacing: 6px; text-align: center;
+  }
+  #yd-gate input::placeholder { color: #475569; letter-spacing: 4px; }
+  #yd-gate input:focus { outline: none; border-color: rgba(251, 191, 36, 0.7); }
+  #yd-gate button {
+    width: 100%; margin-top: 10px; background: rgba(251, 191, 36, 0.14); border: 1.5px solid rgba(251, 191, 36, 0.45);
+    color: #fbbf24; font-size: 14px; font-weight: 800; border-radius: 12px; padding: 12px; cursor: pointer;
+    font-family: inherit;
+  }
+  #yd-gate button:active { transform: scale(0.98); }
+  #yd-gate .yd-msg { min-height: 16px; margin-top: 9px; font-size: 12px; font-weight: 700; color: #f87171; }
+</style>
+<script>
+(function () {
+  var KEY = 'yd-unlock-v1', VAL = 'ok';
+  var HASH = '5d1a8659abe2b8e0ed3b158d746fe06bd5bd12f4520ff900a835cdb76ae75ef5';
+  var PLAIN = '3188';
+  function unlocked() { try { return localStorage.getItem(KEY) === VAL; } catch (e) { return false; } }
+  if (unlocked()) return;
+  document.documentElement.classList.add('yd-locked');
+  function sha256(s) {
+    if (!(window.crypto && crypto.subtle && crypto.subtle.digest && window.TextEncoder)) return Promise.resolve(null);
+    try {
+      return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
+        return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+      }).catch(function () { return null; });
+    } catch (e) { return Promise.resolve(null); }
+  }
+  function mount() {
+    var wrap = document.createElement('div');
+    wrap.id = 'yd-gate';
+    wrap.innerHTML = '<div class="yd-card">' +
+      '<div class="yd-icon">🔒</div>' +
+      '<div class="yd-title">틴이님 전용 대시보드</div>' +
+      '<div class="yd-sub">비밀번호 4자리를 입력하세요</div>' +
+      '<input id="yd-pass" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="8" autocomplete="current-password" placeholder="····" aria-label="비밀번호">' +
+      '<button id="yd-go" type="button">열기</button>' +
+      '<div class="yd-msg" id="yd-msg" role="alert"></div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+    var inp = document.getElementById('yd-pass');
+    var msg = document.getElementById('yd-msg');
+    var card = wrap.querySelector('.yd-card');
+    function shake() {
+      if (!card || !card.animate) return;
+      card.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 220 });
+    }
+    function fail() {
+      msg.textContent = '비밀번호가 맞지 않습니다';
+      inp.value = '';
+      inp.focus();
+      shake();
+    }
+    function ok() {
+      try { localStorage.setItem(KEY, VAL); } catch (e) {}
+      wrap.remove();
+      document.documentElement.classList.remove('yd-locked');
+    }
+    function submit() {
+      var v = inp.value.trim();
+      if (!v) { msg.textContent = '비밀번호를 입력해 주세요'; return; }
+      sha256(v).then(function (h) { if (h ? h === HASH : v === PLAIN) { ok(); } else { fail(); } });
+    }
+    document.getElementById('yd-go').addEventListener('click', submit);
+    inp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
+    inp.addEventListener('input', function () { msg.textContent = ''; });
+    setTimeout(function () { try { inp.focus(); } catch (e) {} }, 60);
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', mount); } else { mount(); }
+})();
+</script>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div><h1>🎬 제작실</h1><div class="sub">주제 하나 넣으면 영상·썸네일·키트까지</div></div>
+    <div class="links"><a href="./morning.html">☀️ 아침 리포트</a><a href="./index.html">📊 총감독 대시보드</a></div>
+  </div>
+
+  <div class="card" id="conn">
+    <h2>연결 상태</h2>
+    <div class="row"><span class="dot" id="dot"></span><span id="connmsg">확인 전</span></div>
+    <label for="url">서버 주소 (예: https://xxxx.trycloudflare.com)</label>
+    <input id="url" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
+    <label for="key">키</label>
+    <input id="key" type="password" autocomplete="off" placeholder="기본 3188">
+    <button class="big" id="chk" type="button">연결 확인</button>
+  </div>
+
+  <div class="card" id="newjob">
+    <h2>새 작업</h2>
+    <label for="topic">주제 (필수)</label>
+    <input id="topic" type="text" placeholder="예: 겨울 아침 앞유리 성에, 뜨거운 물 붓지 마세요">
+    <div class="grid2">
+      <div><label for="kw">키워드 (선택)</label><input id="kw" type="text"></div>
+      <div><label for="fmt">포맷</label><select id="fmt"><option value="shorts">쇼츠</option><option value="longform">롱폼</option></select></div>
+    </div>
+    <label for="ch">채널</label>
+    <select id="ch"><option>트롯두스푼 TV</option><option>쇼핑 판정단</option><option>Rest In Psalms</option><option>Midnight Buddhist</option><option>직접입력</option></select>
+    <button class="big" id="go" type="button">🎬 제작 시작</button>
+    <div class="err" id="newerr"></div>
+  </div>
+
+  <div id="needurl" class="card hide">먼저 서버 주소를 넣어 주세요.</div>
+  <div id="jobs"></div>
+  <div class="mut" id="foot"></div>
+</div>
+
+<script>
+(function(){
+  var $ = function(s){ return document.querySelector(s); };
+  var URLK='yd-director-url', KEYK='yd-director-key';
+  var STAGES=['대기','기획·대본','이미지·영상','썸네일·키트','완료'];
+  function base(){ return ($('#url').value||'').trim().replace(/\/+$/,''); }
+  function key(){ return ($('#key').value||'').trim() || '3188'; }
+  function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k)||''; localStorage.setItem(k,v);}catch(e){return '';} }
+  function el(tag, attrs, kids){
+    var e=document.createElement(tag); attrs=attrs||{};
+    Object.keys(attrs).forEach(function(k){ if(k==='text') e.textContent=attrs[k]; else if(k==='class') e.className=attrs[k]; else e.setAttribute(k,attrs[k]); });
+    [].concat(kids||[]).forEach(function(c){ if(c) e.append(c); });
+    return e;
+  }
+  function api(path, opt){
+    opt=opt||{}; var h={'X-Director-Key':key()}; if(opt.body) h['Content-Type']='application/json';
+    return fetch(base()+path,{method:opt.method||'GET',headers:h,body:opt.body}).then(function(r){
+      if(r.status===401) throw new Error('KEY');
+      if(r.status===429) throw new Error('RATE');
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    });
+  }
+  function setDot(state,msg){ var d=$('#dot'); d.className='dot '+(state||''); $('#connmsg').textContent=msg; }
+  var fails=0, timer=null, jobsCache={}, kitCache={};
+
+  function check(){
+    ls(URLK, base()); ls(KEYK, key());
+    if(!base()){ setDot('', '서버 주소를 넣어 주세요'); show(); return; }
+    setDot('', '확인 중...');
+    fetch(base()+'/api/health').then(function(r){return r.json();}).then(function(j){
+      return api('/api/jobs').then(function(){ fails=0; setDot('on','연결됨 · PC 시각 '+(j.pc_time||'')); show(); poll(true); });
+    }).catch(function(e){
+      setDot('off', e.message==='KEY' ? '키(비밀번호)가 맞지 않습니다' : e.message==='RATE' ? '잠시 후 다시 시도하세요(실패 5회 초과)' : '🔴 어사이드 PC에 연결 안 됨 · PC와 터널이 켜져 있는지 확인해 주세요');
+    });
+  }
+  function show(){ var has=!!base(); $('#needurl').classList.toggle('hide',has); $('#newjob').classList.toggle('hide',!has); $('#jobs').classList.toggle('hide',!has); }
+
+  function startJob(){
+    var topic=($('#topic').value||'').trim(); $('#newerr').textContent='';
+    if(!topic){ $('#newerr').textContent='주제를 입력해 주세요'; return; }
+    var body=JSON.stringify({topic:topic,keyword:$('#kw').value.trim()||null,channel:$('#ch').value,format:$('#fmt').value,source:'manual'});
+    api('/api/jobs',{method:'POST',body:body}).then(function(j){ $('#topic').value=''; $('#kw').value=''; location.hash='job='+j.job_id; poll(true); })
+      .catch(function(e){ $('#newerr').textContent = e.message==='KEY' ? '비밀번호(키)를 확인해 주세요' : '🔴 어사이드 PC에 연결하지 못했어요'; });
+  }
+
+  function elapsed(a,b){ try{ var s=(new Date((b||new Date().toISOString().slice(0,19).replace('T',' ')).replace(' ','T'))-new Date(a.replace(' ','T')))/1000; if(isNaN(s)||s<0) return ''; return s>=60? Math.floor(s/60)+'분 '+Math.round(s%60)+'초' : Math.round(s)+'초'; }catch(e){return '';} }
+
+  function copyBtn(getText){
+    var b=el('button',{class:'sm',type:'button',text:'복사'});
+    b.addEventListener('click',function(){
+      var t=getText();
+      function done(){ b.textContent='복사됨 ✓'; setTimeout(function(){b.textContent='복사';},1200); }
+      function fb(){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} ta.remove(); done(); }
+      try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done,fb); } else fb(); }catch(e){ fb(); }
+    });
+    return b;
+  }
+  function crow(text){ return el('div',{class:'copyrow'},[el('div',{class:'txt',text:text}),copyBtn(function(){return text;})]); }
+
+  function renderKit(box, kit){
+    box.replaceChildren();
+    var s1=el('div',{class:'sec'},[el('h3',{text:'제목 3안'})]);
+    (kit.title_options||[]).forEach(function(t,i){ s1.append(crow((i===0?'⭐ ':'')+t)); });
+    box.append(s1);
+    var s2=el('div',{class:'sec'},[el('h3',{text:'설명'}),crow(kit.description||'')]); box.append(s2);
+    var s3=el('div',{class:'sec'},[el('h3',{text:'태그'}),crow((kit.tags||[]).join(' '))]); box.append(s3);
+    var s4=el('div',{class:'sec'},[el('h3',{text:'고정댓글'}),crow(kit.pinned_comment||'')]); box.append(s4);
+    var det=el('details',{class:'sec'},[el('summary',{text:'대본 보기'}),crow(kit.script||'')]); box.append(det);
+  }
+
+  function jobCard(j){
+    var c=el('div',{class:'card job',id:'job-'+j.id});
+    c.append(el('div',{class:'t',text:j.topic||''}));
+    c.append(el('div',{class:'mut',text:(j.channel||'')+' · '+(j.format==='longform'?'롱폼':'쇼츠')+' · '+(j.created||'')}));
+    var st=el('div',{class:'steps'});
+    STAGES.forEach(function(n,i){
+      var cls='step'; if(j.status==='failed'||j.status==='canceled'){ if(i<j.stage_index) cls+=' done'; else if(i===j.stage_index) cls+=' fail'; }
+      else if(j.status==='done'||i<j.stage_index) cls+=' done'; else if(i===j.stage_index) cls+=' cur';
+      st.append(el('div',{class:cls,text:n}));
+    });
+    c.append(st);
+    var stl = j.status==='canceled'?'중단됨': j.status==='failed'?'실패': j.status==='queued'?'대기 중':'';
+    c.append(el('div',{class:'mut',text:(j.progress!=null?j.progress+'%':'')+' · '+(stl||j.stage||'')+' · 경과 '+elapsed(j.created, (j.status==='done'||j.status==='failed'||j.status==='canceled')?j.updated:null)}));
+    if(j.error) c.append(el('div',{class:'err',text:'🔴 '+j.error}));
+    var act=el('div',{class:'row'});
+    if(j.status==='queued'||j.status==='running'){ var b=el('button',{class:'sm warn',type:'button',text:'중단'}); b.addEventListener('click',function(){ api('/api/jobs/'+j.id+'/cancel',{method:'POST'}).then(function(){poll(true);}).catch(function(){}); }); act.append(b); }
+    if(j.status==='failed'||j.status==='canceled'){ var r=el('button',{class:'sm',type:'button',text:'다시 시도'}); r.addEventListener('click',function(){ api('/api/jobs',{method:'POST',body:JSON.stringify({topic:j.topic,keyword:j.keyword||null,channel:j.channel,format:j.format,source:'manual'})}).then(function(){poll(true);}).catch(function(){}); }); act.append(r); }
+    if(act.childNodes.length) c.append(act);
+    if(j.status==='done'){ c.append(el('div',{class:'mut',text:'불러오는 중...'})); fillDone(c,j.id); }
+    return c;
+  }
+
+  function fillDone(c,id){
+    var u=base(), k=encodeURIComponent(key());
+    api('/api/jobs/'+id).then(function(full){
+      var r=full.result||{}, box=el('div',{});
+      var v=el('video',{controls:'',playsinline:'',preload:'metadata',src:u+r.video_preview+'?k='+k});
+      var dl=el('a',{class:'bt',href:u+r.video_final+'?k='+k,target:'_blank',rel:'noopener',text:'1080p 원본 내려받기'});
+      var info=el('span',{class:'mut',text:'확인용 '+(r.size_720_mb!=null?r.size_720_mb+'MB':'-')+' / 원본 '+(r.size_1080_mb!=null?r.size_1080_mb+'MB':'-')});
+      box.append(el('div',{class:'sec'},[el('h3',{text:'영상'}),v,el('div',{class:'row',style:'margin-top:8px'},[dl,info])]));
+      var th=el('img',{class:'th',src:u+r.thumb+'?k='+k,alt:'썸네일'});
+      var sv=el('a',{class:'bt',href:u+r.thumb+'?k='+k,download:'썸네일_'+id+'.jpg',target:'_blank',rel:'noopener',text:'썸네일 저장'});
+      box.append(el('div',{class:'sec'},[el('h3',{text:'썸네일'}),th,el('div',{class:'row',style:'margin-top:8px'},[sv,el('span',{class:'mut',text:'아이폰: 이미지를 길게 눌러 사진에 저장'})])]));
+      var kb=el('div',{}); box.append(kb);
+      box.append(el('div',{class:'mut',style:'margin-top:10px',text:'만든 시각 '+(full.finished||'')+' · 총 소요 '+elapsed(full.started||full.created, full.finished)+' · 작업 '+id}));
+      var old=c.querySelector('.mut:last-child'); if(old && old.textContent==='불러오는 중...') old.remove();
+      c.append(box);
+      fetch(u+r.kit+'?k='+k).then(function(x){return x.json();}).then(function(kit){ renderKit(kb,kit); }).catch(function(){ kb.textContent='키트를 불러오지 못했어요'; });
+    }).catch(function(){});
+  }
+
+  function render(list){
+    var box=$('#jobs'), sig=JSON.stringify(list.map(function(j){return [j.id,j.status,j.stage_index,j.progress,j.error];}));
+    if(box.dataset.sig===sig) return; box.dataset.sig=sig;
+    box.replaceChildren();
+    list.forEach(function(j){ try{ box.append(jobCard(j)); }catch(e){} });
+    var m=location.hash.match(/job=([\w-]+)/); if(m){ var t=document.getElementById('job-'+m[1]); if(t&&!box.dataset.scrolled){ box.dataset.scrolled='1'; t.scrollIntoView(); } }
+  }
+
+  function poll(now){
+    if(timer){ clearTimeout(timer); timer=null; }
+    if(!base()) return;
+    function tick(){
+      if(document.hidden){ timer=setTimeout(tick,3000); return; }
+      api('/api/jobs').then(function(j){
+        fails=0; setDot('on','연결됨'); render(j.jobs||[]);
+        var active=(j.jobs||[]).some(function(x){return x.status==='queued'||x.status==='running';});
+        if(active) timer=setTimeout(tick,3000);
+      }).catch(function(e){
+        fails++; if(fails>=3) setDot('off','🔴 PC/터널 확인 필요 ('+(e.message==='KEY'?'키 오류':'연결 실패')+')');
+        timer=setTimeout(tick,5000);
+      });
+    }
+    if(now) tick(); else timer=setTimeout(tick,3000);
+  }
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden && base()) poll(true); });
+
+  $('#url').value=ls(URLK); $('#key').value=ls(KEYK)||'3188';
+  $('#chk').addEventListener('click',check);
+  $('#go').addEventListener('click',startJob);
+  show(); if(base()) check();
+})();
+</script>
+</body>
+</html>

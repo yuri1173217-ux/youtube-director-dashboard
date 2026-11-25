@@ -265,6 +265,18 @@
   .cg-lb.guide { background: rgba(52,211,153,0.14); color: #6ee7b7; }
   .cg-tx { font-size: 11.5px; color: #cbd5e1; line-height: 1.55; word-break: keep-all; }
   .cg-row.guide .cg-tx { color: #d1fae5; font-weight: 600; }
+  .cg-topics { margin-top: 8px; border-top: 1px dashed rgba(255,255,255,0.12); padding-top: 7px; }
+  .cg-topics > summary { cursor: pointer; font-size: 11.5px; font-weight: 800; color: #fde68a; list-style: none; }
+  .cg-topics > summary::-webkit-details-marker { display: none; }
+  .cg-topics > summary::before { content: "\25B8 "; }
+  .cg-topics[open] > summary::before { content: "\25BE "; }
+  .cg-tp { margin-top: 7px; padding: 7px 8px 8px; border-radius: 8px; background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.20); }
+  .cg-tp-t { font-size: 12px; font-weight: 800; color: #fef3c7; line-height: 1.45; word-break: keep-all; }
+  .cg-tp-n { display: inline-block; min-width: 16px; text-align: center; margin-right: 5px; font-size: 10px; font-weight: 800; color: #1c1917; background: #fcd34d; border-radius: 5px; padding: 0 3px; }
+  .cg-tp-r { font-size: 11px; color: #cbd5e1; line-height: 1.55; margin-top: 3px; word-break: keep-all; }
+  .cg-tp-r b { color: #fcd34d; font-weight: 700; }
+  .cg-tp-r a { color: #93c5fd; text-decoration: underline; }
+  .cg-tp-r.warn { color: #fca5a5; }
   .cg-msg { font-size: 11.5px; color: var(--muted); line-height: 1.65; padding: 6px 2px 4px; }
   .cg-retry {
     margin-top: 7px; font-size: 11.5px; font-weight: 700; color: #c4b5fd;
@@ -1355,6 +1367,30 @@
       '</div>';
   }
 
+  function cgSafeUrl(u) {
+    u = String(u || '');
+    return /^https?:\/\//i.test(u) ? u.replace(/"/g, '%22') : '';
+  }
+
+  function cgTopics(c) {
+    var t = c && c.topics;
+    if (!t || !t.length) return '';
+    var rows = t.map(function (x, i) {
+      var src = (x.sources || []).map(function (s) {
+        var u = cgSafeUrl(s.url);
+        return u ? '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + obEsc(s.label || '출처') + '</a>' : obEsc(s.label || '');
+      }).filter(Boolean).join(' · ');
+      return '<div class="cg-tp">' +
+        '<div class="cg-tp-t"><span class="cg-tp-n">' + (i + 1) + '</span>' + obEsc(x.title) + '</div>' +
+        (x.hook ? '<div class="cg-tp-r"><b>첫 문장</b> ' + obEsc(x.hook) + '</div>' : '') +
+        (x.why ? '<div class="cg-tp-r"><b>왜</b> ' + obEsc(x.why) + '</div>' : '') +
+        (src ? '<div class="cg-tp-r"><b>근거</b> ' + src + '</div>' : '') +
+        (x.check ? '<div class="cg-tp-r warn"><b>확인 필요</b> ' + obEsc(x.check) + '</div>' : '') +
+      '</div>';
+    }).join('');
+    return '<details class="cg-topics" open><summary>오늘의 추천 소재 ' + t.length + '개 · ' + obEsc(c.topics_date || '') + '</summary>' + rows + '</details>';
+  }
+
   function cgRender(data) {
     var subEl = document.getElementById('cg-sub');
     var list = document.getElementById('cg-list');
@@ -1383,6 +1419,7 @@
         '<div class="cg-metric">' + obEsc(c.metrics) + '</div>' +
         '<div class="cg-row"><span class="cg-lb diag">병목</span><span class="cg-tx">' + obEsc(c.diagnosis) + '</span></div>' +
         '<div class="cg-row guide"><span class="cg-lb guide">길잡이</span><span class="cg-tx">' + obEsc(c.guide) + '</span></div>' +
+        cgTopics(c) +
       '</div>';
     }).join('');
   }

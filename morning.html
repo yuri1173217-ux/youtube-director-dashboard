@@ -89,6 +89,8 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 .ee dt{color:var(--mut);font-size:12.5px}
 .ee dd{margin:0;font-size:13px;word-break:break-word}
 @media(max-width:560px){.ee dl,.rec .ee dl{grid-template-columns:66px 1fr}}
+/* 폰에서는 탭 4개가 한 줄에 안 들어가므로 줄바꿈해서 전부 보이게 한다 */
+@media(max-width:560px){.tabs{flex-wrap:wrap;overflow:visible}.tab{padding:7px 11px;font-size:12.5px}}
 @media(max-width:560px){.row{grid-template-columns:28px 90px 1fr}.row img{width:90px}.rec dl{grid-template-columns:70px 1fr}}
 </style>
 <!-- 🔒 페이지 잠금 (index.html · morning.html 공통 / localStorage 공유 키) -->

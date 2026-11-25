@@ -1,0 +1,261 @@
+{
+ "date": "2026-11-26",
+ "collected_at": "2026-11-26T07:31:47+09:00",
+ "collector": "aside-0won/1.0",
+ "cost_usd": 0.0,
+ "note": "완전 0원 2종(스레드 공개 검색 + 틱톡 Creative Center KR). 로그인·유료 API 없이 수집.",
+ "platforms": {
+  "tiktok": {
+   "mode": "creative_center",
+   "country": "KR",
+   "period": "7d",
+   "source_url": "https://ads.tiktok.com/creative/creativeCenter/trends/hashtag?countryCode=KR&period=7&region=KR",
+   "collected_at": "2026-11-26T07:31:57+09:00",
+   "signal": "수집원: TikTok Creative Center (KR · 최근 7일) · 로그아웃 상태 · 순위 1~3위만 무료",
+   "note": "로그아웃 기준 순위 1~3위만 무료. 4위부터는 로그인 필요. (화면 텍스트 폴백으로 수집 — 업종/크리에이터 비어 있음)",
+   "items": [
+    {
+     "rank": 1,
+     "tag": "#animeedit",
+     "posts": 28800,
+     "views": 11900000,
+     "industries": [],
+     "creators": [],
+     "url": "https://www.tiktok.com/tag/animeedit"
+    },
+    {
+     "rank": 2,
+     "tag": "#onepiece",
+     "posts": 28600,
+     "views": 6300000,
+     "industries": [],
+     "creators": [],
+     "url": "https://www.tiktok.com/tag/onepiece"
+    },
+    {
+     "rank": 3,
+     "tag": "#naruto",
+     "posts": 27900,
+     "views": 5500000,
+     "industries": [],
+     "creators": [],
+     "url": "https://www.tiktok.com/tag/naruto"
+    }
+   ]
+  },
+  "threads": {
+   "mode": "web_search",
+   "query": "한국",
+   "source_url": "https://www.threads.com/search?q=한국",
+   "collected_at": "2026-11-26T07:32:09+09:00",
+   "signal": "수집원: threads.com 공개 검색 · 로그아웃 첫 화면 · 좋아요 순 재정렬",
+   "note": "관련도 순이라 과거 글이 섞여 나온다. 하단은 로그인 벽. 하루 1회만 실행할 것.",
+   "items": [
+    {
+     "author": "dr.dermethanol",
+     "date": "2일",
+     "text": "조작 천국 대한민국",
+     "likes": 3700,
+     "replies": 72,
+     "reposts": 368,
+     "shares": 23,
+     "url": "https://www.threads.com/@dr.dermethanol/post/DgEZjanndJo",
+     "keyword": "한국",
+     "rank": 1
+    },
+    {
+     "author": "kureha_nakagawa",
+     "date": "2026-03-10",
+     "text": "한국에 왔어 🇰🇷",
+     "likes": 1700,
+     "replies": 129,
+     "reposts": 11,
+     "shares": 6,
+     "url": "https://www.threads.com/@kureha_nakagawa/post/DVs3glnie8G",
+     "keyword": "한국",
+     "rank": 2
+    },
+    {
+     "author": "marketerdesigner",
+     "date": "2026-01-08",
+     "text": "한국인은",
+     "likes": 852,
+     "replies": 114,
+     "reposts": 25,
+     "shares": 45,
+     "url": "https://www.threads.com/@marketerdesigner/post/DTOKNUhEpqG",
+     "keyword": "한국",
+     "rank": 3
+    },
+    {
+     "author": "osukguri",
+     "date": "2025-03-10",
+     "text": "한국에 왔어",
+     "likes": 671,
+     "replies": 112,
+     "reposts": 9,
+     "shares": null,
+     "url": "https://www.threads.com/@osukguri/post/DHAiEvCSaGx",
+     "keyword": "한국",
+     "rank": 4
+    },
+    {
+     "author": "___rn.0610",
+     "date": "2026-02-23",
+     "text": "한국에 왔어🇰🇷",
+     "likes": 492,
+     "replies": 48,
+     "reposts": 2,
+     "shares": null,
+     "url": "https://www.threads.com/@___rn.0610/post/DVGqG_6Eblt",
+     "keyword": "한국",
+     "rank": 5
+    },
+    {
+     "author": "lydhwa",
+     "date": "2025-12-18",
+     "text": "한국이요",
+     "likes": 491,
+     "replies": 7,
+     "reposts": 2,
+     "shares": 17,
+     "url": "https://www.threads.com/@lydhwa/post/DSZ9hUvjFlu",
+     "keyword": "한국",
+     "rank": 6
+    },
+    {
+     "author": "memebabheaven",
+     "date": "2025-07-13",
+     "text": "같은 한국인 맞지",
+     "likes": 461,
+     "replies": 36,
+     "reposts": 29,
+     "shares": null,
+     "url": "https://www.threads.com/@memebabheaven/post/DMDVf5mz6Zy",
+     "keyword": "한국",
+     "rank": 7
+    },
+    {
+     "author": "y____ira",
+     "date": "2025-01-17",
+     "text": "한국 와써용",
+     "likes": 306,
+     "replies": 14,
+     "reposts": 4,
+     "shares": 2,
+     "url": "https://www.threads.com/@y____ira/post/DE5GphpzR3u",
+     "keyword": "한국",
+     "rank": 8
+    },
+    {
+     "author": "freedom_1948",
+     "date": "2026-09-28",
+     "text": "대한민국의 주적은?",
+     "likes": 240,
+     "replies": 178,
+     "reposts": 8,
+     "shares": 2,
+     "url": "https://www.threads.com/@freedom_1948/post/Dd1J8LvgfCY",
+     "keyword": "한국",
+     "rank": 9
+    },
+    {
+     "author": "_rrxny_",
+     "date": "2025-09-02",
+     "text": "일본이게 한국이게 😆",
+     "likes": 209,
+     "replies": 39,
+     "reposts": 1,
+     "shares": 9,
+     "url": "https://www.threads.com/@_rrxny_/post/DOGQ0Wrjzzb",
+     "keyword": "한국",
+     "rank": 10
+    },
+    {
+     "author": "_joh_ha_",
+     "date": "2026-07-14",
+     "text": "어디가 한국일까?",
+     "likes": 187,
+     "replies": 42,
+     "reposts": 37,
+     "shares": null,
+     "url": "https://www.threads.com/@_joh_ha_/post/DavgL-kAcHZ",
+     "keyword": "한국",
+     "rank": 11
+    },
+    {
+     "author": "8o6_jh",
+     "date": "2026-06-08",
+     "text": "한국사람입니다",
+     "likes": 187,
+     "replies": 8,
+     "reposts": null,
+     "shares": null,
+     "url": "https://www.threads.com/@8o6_jh/post/DZSzvcjGQKB",
+     "keyword": "한국",
+     "rank": 12
+    },
+    {
+     "author": "nabinaruemon2003",
+     "date": "2025-12-24",
+     "text": "한국 보고 싶어요🇰🇷",
+     "likes": 92,
+     "replies": 14,
+     "reposts": null,
+     "shares": null,
+     "url": "https://www.threads.com/@nabinaruemon2003/post/DSpdB2ykRez",
+     "keyword": "한국",
+     "rank": 13
+    },
+    {
+     "author": "zz6._.yu",
+     "date": "2026-10-25",
+     "text": "한국이무",
+     "likes": 68,
+     "replies": 4,
+     "reposts": null,
+     "shares": null,
+     "url": "https://www.threads.com/@zz6._.yu/post/De65oRJmKya",
+     "keyword": "한국",
+     "rank": 14
+    },
+    {
+     "author": "rksud_000",
+     "date": "2026-10-26",
+     "text": "한국임",
+     "likes": 66,
+     "replies": 17,
+     "reposts": 1,
+     "shares": null,
+     "url": "https://www.threads.com/@rksud_000/post/De9TG3iE_JT",
+     "keyword": "한국",
+     "rank": 15
+    },
+    {
+     "author": "uyennee_107",
+     "date": "2024-11-15",
+     "text": "🍂🍂 가을한국",
+     "likes": 22,
+     "replies": 2,
+     "reposts": null,
+     "shares": null,
+     "url": "https://www.threads.com/@uyennee_107/post/DCX9mdIS1DM",
+     "keyword": "한국",
+     "rank": 16
+    },
+    {
+     "author": "khurshid_fit13",
+     "date": "2026-04-13",
+     "text": "한국인 처럼 보여요?",
+     "likes": 17,
+     "replies": 5,
+     "reposts": null,
+     "shares": null,
+     "url": "https://www.threads.com/@khurshid_fit13/post/DXCUUPrD-Lg",
+     "keyword": "한국",
+     "rank": 17
+    }
+   ]
+  }
+ }
+}

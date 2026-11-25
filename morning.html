@@ -159,7 +159,7 @@ h2{font-size:17px;margin:22px 0 10px;color:var(--acc)}
 <h1>아침 떡상 탑10 + 추천 3개</h1>
 
 <nav class="tabs" role="tablist">
-  <button class="tab on" data-p="yt" role="tab" aria-selected="true">📺 유튜브 (키워드 없음)</button>
+  <button class="tab on" data-p="yt" role="tab" aria-selected="true">📺 유튜브</button>
   <button class="tab" data-p="th" role="tab" aria-selected="false">🧵 스레드 (0원)</button>
   <button class="tab" data-p="tt" role="tab" aria-selected="false">🎵 틱톡 (1~3위)</button>
 </nav>
@@ -230,7 +230,7 @@ function eyeEarBox(src) {
 /* ---------------- 유튜브 (기존 그대로) ---------------- */
 function render(d) {
   const out = $('#out'); out.replaceChildren();
-  $('#sub').textContent = d.date + ' 기준 / 최근 7일 / 검색어 없이 유튜브 분류별 상위 100개씩 / 만든 시각 ' + (d.generated || '-');
+  $('#sub').textContent = d.date + ' 기준 / 최근 7일 / ' + (d.mode_label || '검색어 없이 유튜브 분류별 상위 100개씩') + ' / 만든 시각 ' + (d.generated || '-');
   out.append(el('h2', {text: '오늘의 추천 3개'}));
   (d.recommendations || []).forEach((r, i) => {
     const st = el('ol'); (r.structure || []).forEach(s => st.append(el('li', {text: s})));

@@ -2,7 +2,8 @@
 <html lang="ko"><head><meta charset="utf-8"><title>모바일 폭 확인</title>
 <style>body{margin:0;background:#000}iframe{width:390px;height:844px;border:0;display:block}</style></head>
 <body>
-<iframe id="f" src="./morning.html"></iframe>
+<iframe id="f"></iframe>
+<script>document.getElementById("f").src="./morning.html?v="+Date.now();</script>
 <script>
 const mock={date:"2026-11-26",generated:"2026-11-26T07:34:10+09:00",stats:{scanned_channels:742,excluded_lottery:128,passed:37},
 channels:[

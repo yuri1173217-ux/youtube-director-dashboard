@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>100만 유튜버 총감독 대시보드 v4.4</title>
+<title>100만 유튜버 총감독 대시보드 v4.5</title>
 <style>
   :root {
     --bg: #0b0f19;
@@ -217,6 +217,61 @@
     border-radius: 8px; padding: 5px 11px; cursor: pointer;
   }
 
+  /* ── 내 채널 100만 구독 길잡이 ── */
+  .cg-board {
+    background: linear-gradient(160deg, rgba(167,139,250,0.14), var(--card) 58%);
+    border: 1px solid rgba(167,139,250,0.40);
+    border-radius: 14px;
+    padding: 12px 12px 11px;
+    margin-bottom: 12px;
+  }
+  .cg-head { display: flex; align-items: center; gap: 8px; }
+  .cg-title { font-size: 14.5px; font-weight: 800; letter-spacing: -0.3px; }
+  .cg-refresh {
+    margin-left: auto; flex: 0 0 auto;
+    font-size: 11px; font-weight: 700; color: #c4b5fd;
+    background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.40);
+    border-radius: 8px; padding: 4px 9px; cursor: pointer; line-height: 1.4;
+  }
+  .cg-refresh:active { background: rgba(167,139,250,0.25); }
+  .cg-sub { font-size: 11px; color: var(--muted); margin-top: 5px; line-height: 1.5; }
+  .cg-sub b { color: #ddd6fe; font-weight: 700; }
+  .cg-list { display: flex; flex-direction: column; gap: 8px; margin-top: 9px; }
+  .cg-item {
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 10px; padding: 9px 10px 10px;
+  }
+  .cg-top { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .cg-name { font-size: 13px; font-weight: 800; color: #f8fafc; letter-spacing: -0.2px; }
+  .cg-status {
+    margin-left: auto; flex: 0 0 auto;
+    font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 999px;
+    white-space: nowrap; border: 1px solid transparent;
+  }
+  .cg-status.run { background: rgba(52,211,153,0.14); color: #6ee7b7; border-color: rgba(52,211,153,0.35); }
+  .cg-status.wait { background: rgba(251,191,36,0.14); color: #fcd34d; border-color: rgba(251,191,36,0.35); }
+  .cg-status.book { background: rgba(56,189,248,0.14); color: #7dd3fc; border-color: rgba(56,189,248,0.35); }
+  .cg-status.check { background: rgba(248,113,113,0.14); color: #fca5a5; border-color: rgba(248,113,113,0.35); }
+  .cg-handle { font-size: 10.5px; font-weight: 600; color: #a5b4fc; margin-top: 2px; word-break: break-all; }
+  .cg-handle.plain { color: #94a3b8; font-weight: 600; }
+  .cg-metric { font-size: 11.5px; font-weight: 600; color: #cbd5e1; margin-top: 4px; line-height: 1.5; }
+  .cg-row { display: flex; align-items: flex-start; gap: 6px; margin-top: 6px; }
+  .cg-lb {
+    flex: 0 0 auto; font-size: 9.5px; font-weight: 800; line-height: 1.6;
+    padding: 1px 5px; border-radius: 5px; margin-top: 1px; white-space: nowrap;
+  }
+  .cg-lb.diag { background: rgba(248,113,113,0.14); color: #fca5a5; }
+  .cg-lb.guide { background: rgba(52,211,153,0.14); color: #6ee7b7; }
+  .cg-tx { font-size: 11.5px; color: #cbd5e1; line-height: 1.55; word-break: keep-all; }
+  .cg-row.guide .cg-tx { color: #d1fae5; font-weight: 600; }
+  .cg-msg { font-size: 11.5px; color: var(--muted); line-height: 1.65; padding: 6px 2px 4px; }
+  .cg-retry {
+    margin-top: 7px; font-size: 11.5px; font-weight: 700; color: #c4b5fd;
+    background: rgba(167,139,250,0.14); border: 1px solid rgba(167,139,250,0.40);
+    border-radius: 8px; padding: 5px 11px; cursor: pointer;
+  }
+
   @media (max-width: 560px) {
     .tabs { grid-template-columns: 1fr 1fr; }
     #btn-tools { grid-column: span 2; }
@@ -230,6 +285,11 @@
     .ob-ratio { font-size: 10.5px; }
     .ob-title-link { font-size: 12px; }
     .ob-meta { gap: 2px 7px; font-size: 10px; }
+    .cg-board { padding: 11px 10px 10px; }
+    .cg-title { font-size: 13.5px; }
+    .cg-name { font-size: 12.5px; }
+    .cg-status { font-size: 9.5px; padding: 1px 6px; }
+    .cg-metric, .cg-tx { font-size: 11px; }
   }
   @media (min-width: 900px) {
     body { padding-top: 32px; }
@@ -333,7 +393,7 @@
 <body>
 
 <div class="header">
-  <span class="badge">v4.4 · 눈·귀 해부 스탭 신설</span>
+  <span class="badge">v4.5 · 내 채널 100만 구독 길잡이</span>
   <h1>100만 유튜버 에이전트 맵</h1>
   <p>에이전트를 누르면 지금 쓰고 있는 툴과 방법이 바로 뜹니다</p>
   <div class="header-actions">
@@ -751,6 +811,19 @@
 
 <!-- PILLAR 2 -->
 <div id="panel-subs" class="hidden subs-mode">
+
+  <!-- 🧭 내 채널 100만 구독 길잡이 · channels.json 실시간 렌더 -->
+  <section class="cg-board" aria-label="내 채널 100만 구독 길잡이">
+    <div class="cg-head">
+      <div class="cg-title">🧭 내 채널 100만 구독 길잡이</div>
+      <button class="cg-refresh" type="button" onclick="cgLoad()" aria-label="채널 길잡이 새로고침">↻ 새로고침</button>
+    </div>
+    <div class="cg-sub" id="cg-sub">채널 현황을 불러오는 중…</div>
+    <div class="cg-list" id="cg-list">
+      <div class="cg-msg">채널 길잡이를 불러오는 중…</div>
+    </div>
+  </section>
+
   <div class="agent-list">
     <div class="agent-card open">
       <button class="agent-head" onclick="toggleCard(this)">
@@ -1152,7 +1225,7 @@
 </div>
 
 <div class="footer">
-  v4.4 · 2026-11-24 · 떡상 Top 10 실시간 연동 · 눈·귀 해부 스탭 신설(0번) · 1~6번 기준표 완전체 확정 · 100만 구독자 1~4번 기준표 완성<br>
+  v4.5 · 2026-11-25 · 내 채널 100만 구독 길잡이 7개 채널 실시간 연동 · 떡상 Top 10 연동 · 눈·귀 해부 스탭(0번) · 1~6번 기준표 · 100만 구독자 기준표<br>
   틴이님 전용 · 검색 노출 안 함
 </div>
 
@@ -1265,6 +1338,73 @@
     }).join('');
   }
 
+  /* ── 내 채널 100만 구독 길잡이 ── */
+  function cgTone(status) {
+    var s = String(status || '');
+    if (s.indexOf('진행') >= 0) return 'run';
+    if (s.indexOf('예약') >= 0) return 'book';
+    if (s.indexOf('대기') >= 0) return 'wait';
+    return 'check';
+  }
+
+  function cgMsg(html, withRetry) {
+    var list = document.getElementById('cg-list');
+    if (!list) return;
+    list.innerHTML = '<div class="cg-msg">' + html +
+      (withRetry ? '<br><button class="cg-retry" type="button" onclick="cgLoad()">↻ 다시 시도</button>' : '') +
+      '</div>';
+  }
+
+  function cgRender(data) {
+    var subEl = document.getElementById('cg-sub');
+    var list = document.getElementById('cg-list');
+    if (!list) return;
+    var items = (data && data.channels) || [];
+
+    if (subEl) {
+      subEl.innerHTML = '<b>' + items.length + '개 채널</b> · 업데이트 ' + obEsc((data && data.updated_at) || '시각 미상') +
+        ' · 병목과 다음 길잡이를 1눈에';
+    }
+
+    if (!items.length) {
+      cgMsg('채널 데이터가 비어 있어요.<br>channels.json 내용을 확인해 주세요.', true);
+      return;
+    }
+
+    list.innerHTML = items.map(function (c) {
+      var handle = String(c.handle || '');
+      var isAt = handle.charAt(0) === '@';
+      return '<div class="cg-item">' +
+        '<div class="cg-top">' +
+          '<span class="cg-name">' + obEsc(c.name) + '</span>' +
+          '<span class="cg-status ' + cgTone(c.status) + '">' + obEsc(c.status) + '</span>' +
+        '</div>' +
+        (handle ? '<div class="cg-handle' + (isAt ? '' : ' plain') + '">' + obEsc(handle) + '</div>' : '') +
+        '<div class="cg-metric">' + obEsc(c.metrics) + '</div>' +
+        '<div class="cg-row"><span class="cg-lb diag">병목</span><span class="cg-tx">' + obEsc(c.diagnosis) + '</span></div>' +
+        '<div class="cg-row guide"><span class="cg-lb guide">길잡이</span><span class="cg-tx">' + obEsc(c.guide) + '</span></div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function cgLoad() {
+    var subEl = document.getElementById('cg-sub');
+    if (typeof fetch !== 'function') {
+      cgMsg('이 브라우저에서는 채널 길잡이를 불러올 수 없어요.<br>최신 브라우저로 열어 주세요.', true);
+      return;
+    }
+    fetch('./channels.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(cgRender)
+      .catch(function () {
+        if (subEl) subEl.textContent = '불러오기 실패';
+        cgMsg('채널 길잡이를 불러오지 못했어요.<br>인터넷 연결을 확인한 뒤 다시 시도해 주세요.', true);
+      });
+  }
+
   function obLoad() {
     var genEl = document.getElementById('ob-gen');
     if (genEl) genEl.textContent = '수집 시각 확인 중…';
@@ -1294,6 +1434,7 @@
     var hash = (location.hash || '').replace('#', '');
     if (TABS.indexOf(hash) >= 0 && hash !== 'views') switchTab(hash);
     obLoad();
+    cgLoad();
   })();
 </script>
 </body>

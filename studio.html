@@ -42,6 +42,10 @@ img.th{width:100%;border-radius:10px}
 .copyrow .txt{flex:1;background:#0f1218;border:1px solid var(--line);border-radius:8px;padding:8px 10px;white-space:pre-wrap;word-break:break-word;font-size:14px}
 details summary{cursor:pointer;color:var(--mut);font-size:13px}
 .hide{display:none}
+.badge{display:inline-block;font-size:11px;font-weight:700;border-radius:6px;padding:2px 7px;margin-left:6px;vertical-align:middle;background:#222a38;color:var(--mut)}
+.badge.pending{background:rgba(255,214,0,.18);color:var(--acc)}.badge.approved{background:rgba(76,195,138,.22);color:var(--ok)}.badge.rejected{background:rgba(255,93,93,.18);color:var(--warn)}.badge.auto{background:rgba(120,160,255,.2);color:#9db8ff}
+button.fl{padding:6px 11px;font-size:13px}button.fl.on{background:var(--acc);color:#111}
+button.ok{color:var(--ok);border-color:rgba(76,195,138,.5);background:rgba(76,195,138,.12)}
 </style>
 <!-- 🔒 페이지 잠금 (index.html · morning.html · studio.html 공통 / localStorage 공유 키) -->
 <style>
@@ -139,7 +143,7 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
 <body>
 <div class="wrap">
   <div class="top">
-    <div><h1>🎬 제작실</h1><div class="sub">주제 하나 넣으면 영상·썸네일·키트까지</div></div>
+    <div><h1>🎬 제작실</h1><div class="sub">주제 하나 넣으면 영상·썸네일·키트까지 · 총감독이 매일 아침 자동 편성한 영상은 승인 대기함에 쌓입니다</div></div>
     <div class="links"><a href="./morning.html">☀️ 아침 리포트</a><a href="./index.html">📊 총감독 대시보드</a></div>
   </div>
 
@@ -149,24 +153,25 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
     <label for="url">서버 주소 (예: https://xxxx.trycloudflare.com)</label>
     <input id="url" type="url" inputmode="url" placeholder="https://..." autocomplete="off">
     <label for="key">키</label>
-    <input id="key" type="password" autocomplete="off" placeholder="기본 3188">
+    <input id="key" type="password" autocomplete="off" placeholder="접속키 (바탕화면 접속키.txt)">
     <button class="big" id="chk" type="button">연결 확인</button>
   </div>
 
   <div class="card" id="newjob">
     <h2>새 작업</h2>
     <label for="topic">주제 (필수)</label>
-    <input id="topic" type="text" placeholder="예: 겨울 아침 앞유리 성에, 뜨거운 물 붓지 마세요">
+    <input id="topic" type="text" placeholder="아무 주제나 한 줄 (예: 겨울 아침 앞유리 성에, 뜨거운 물 붓지 마세요). 트롯 채널은 가수 이름으로 시작하고 기사 주소를 붙여 주세요">
     <div class="grid2">
       <div><label for="kw">키워드 (선택)</label><input id="kw" type="text"></div>
       <div><label for="fmt">포맷</label><select id="fmt"><option value="shorts">쇼츠</option><option value="longform">롱폼</option></select></div>
     </div>
     <label for="ch">채널</label>
-    <select id="ch"><option>트롯두스푼 TV</option><option>쇼핑 판정단</option><option>Rest In Psalms</option><option>Midnight Buddhist</option><option>직접입력</option></select>
+    <select id="ch"><option>트롯두스푼 TV</option><option>그때 그 시절</option><option>건강꿀통</option><option>쇼핑 판정단</option><option>Rest In Psalms</option><option>Midnight Buddhist</option><option>직접입력</option></select>
     <button class="big" id="go" type="button">🎬 제작 시작</button>
     <div class="err" id="newerr"></div>
   </div>
 
+  <div class="card hide" id="inbox"><h2>승인 대기함</h2><div class="row" id="flt"></div><div class="mut" id="fltmsg" style="margin-top:6px"></div></div>
   <div id="needurl" class="card hide">먼저 서버 주소를 넣어 주세요.</div>
   <div id="jobs"></div>
   <div class="mut" id="foot"></div>
@@ -196,7 +201,25 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
     });
   }
   function setDot(state,msg){ var d=$('#dot'); d.className='dot '+(state||''); $('#connmsg').textContent=msg; }
-  var fails=0, timer=null, jobsCache={}, kitCache={};
+  var fails=0, timer=null, jobsCache={}, kitCache={}, FLT=ls('yd-flt')||'wait', LAST=[];
+  function apOf(j){ return j.status==='done' ? (j.approval||'pending') : ''; }
+  function inFlt(j){
+    if(FLT==='all') return true;
+    if(FLT==='run') return j.status==='queued'||j.status==='running'||j.status==='failed'||j.status==='canceled';
+    if(FLT==='wait') return apOf(j)==='pending';
+    return apOf(j)===FLT;
+  }
+  function bar(list){
+    var n={wait:0,run:0,approved:0,rejected:0,all:list.length};
+    list.forEach(function(j){ var a=apOf(j); if(a==='pending') n.wait++; else if(a==='approved') n.approved++; else if(a==='rejected') n.rejected++; else n.run++; });
+    var f=$('#flt'); f.replaceChildren();
+    [['wait','승인 대기 '+n.wait],['run','만드는 중·실패 '+n.run],['approved','승인됨 '+n.approved],['rejected','반려 '+n.rejected],['all','전체 '+n.all]].forEach(function(p){
+      var b=el('button',{class:'fl'+(FLT===p[0]?' on':''),type:'button',text:p[1]});
+      b.addEventListener('click',function(){ FLT=p[0]; ls('yd-flt',FLT); $('#jobs').dataset.sig=''; render(LAST); });
+      f.append(b);
+    });
+    $('#fltmsg').textContent = n.wait ? '영상을 보시고 승인 또는 반려를 눌러 주세요. 업로드는 승인한 것만, 시키실 때 합니다.' : '승인 대기 중인 영상이 없습니다.';
+  }
 
   function check(){
     ls(URLK, base()); ls(KEYK, key());
@@ -208,7 +231,7 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
       setDot('off', e.message==='KEY' ? '키(비밀번호)가 맞지 않습니다' : e.message==='RATE' ? '잠시 후 다시 시도하세요(실패 5회 초과)' : '🔴 어사이드 PC에 연결 안 됨 · PC와 터널이 켜져 있는지 확인해 주세요');
     });
   }
-  function show(){ var has=!!base(); $('#needurl').classList.toggle('hide',has); $('#newjob').classList.toggle('hide',!has); $('#jobs').classList.toggle('hide',!has); }
+  function show(){ var has=!!base(); $('#inbox').classList.toggle('hide',!has); $('#needurl').classList.toggle('hide',has); $('#newjob').classList.toggle('hide',!has); $('#jobs').classList.toggle('hide',!has); }
 
   function startJob(){
     var topic=($('#topic').value||'').trim(); $('#newerr').textContent='';
@@ -245,7 +268,10 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
 
   function jobCard(j){
     var c=el('div',{class:'card job',id:'job-'+j.id});
-    c.append(el('div',{class:'t',text:j.topic||''}));
+    var tt=el('div',{class:'t',text:j.topic||''});
+    if(j.auto) tt.append(el('span',{class:'badge auto',text:'자동 편성'}));
+    var ap0=apOf(j); if(ap0) tt.append(el('span',{class:'badge '+ap0,text: ap0==='approved'?'승인됨': ap0==='rejected'?'반려':'승인 대기'}));
+    c.append(tt);
     c.append(el('div',{class:'mut',text:(j.channel||'')+' · '+(j.format==='longform'?'롱폼':'쇼츠')+' · '+(j.created||'')}));
     var st=el('div',{class:'steps'});
     STAGES.forEach(function(n,i){
@@ -261,11 +287,28 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
     if(j.status==='queued'||j.status==='running'){ var b=el('button',{class:'sm warn',type:'button',text:'중단'}); b.addEventListener('click',function(){ api('/api/jobs/'+j.id+'/cancel',{method:'POST'}).then(function(){poll(true);}).catch(function(){}); }); act.append(b); }
     if(j.status==='failed'||j.status==='canceled'){ var r=el('button',{class:'sm',type:'button',text:'다시 시도'}); r.addEventListener('click',function(){ api('/api/jobs',{method:'POST',body:JSON.stringify({topic:j.topic,keyword:j.keyword||null,channel:j.channel,format:j.format,source:'manual'})}).then(function(){poll(true);}).catch(function(){}); }); act.append(r); }
     if(act.childNodes.length) c.append(act);
-    if(j.status==='done'){ c.append(el('div',{class:'mut',text:'불러오는 중...'})); fillDone(c,j.id); }
+    if(j.status==='done'){ c.append(el('div',{class:'mut',text:'불러오는 중...'})); fillDone(c,j.id,j); }
     return c;
   }
 
-  function fillDone(c,id){
+  function approvalRow(j){
+    var row=el('div',{class:'sec'},[el('h3',{text:'승인'})]);
+    var note=el('input',{type:'text',placeholder:'메모(선택): 고칠 점, 반려 이유',value:j.approval_note||''});
+    function setAp(st){ api('/api/jobs/'+j.id+'/approval',{method:'POST',body:JSON.stringify({status:st,note:note.value})}).then(function(){ poll(true); }).catch(function(){}); }
+    var b1=el('button',{class:'ok',type:'button',text:'✅ 승인'}); b1.addEventListener('click',function(){ setAp('approved'); });
+    var b2=el('button',{class:'warn',type:'button',text:'반려'}); b2.addEventListener('click',function(){ setAp('rejected'); });
+    var b3=el('button',{class:'sm',type:'button',text:'대기로 되돌리기'}); b3.addEventListener('click',function(){ setAp('pending'); });
+    row.append(note, el('div',{class:'row',style:'margin-top:8px'},[b1,b2,b3]));
+    if((j.approval||'pending')==='approved'){
+      var yu=el('input',{type:'url',placeholder:'업로드하신 영상 주소(붙여넣기) → 48시간 뒤 성적표를 자동으로 봅니다',value:j.youtube_url||'',style:'margin-top:8px'});
+      var sb=el('button',{class:'sm',type:'button',text:'주소 저장'});
+      sb.addEventListener('click',function(){ api('/api/jobs/'+j.id+'/approval',{method:'POST',body:JSON.stringify({youtube_url:yu.value})}).then(function(){ sb.textContent='저장됨 ✓'; }).catch(function(){ sb.textContent='주소를 확인해 주세요'; }); });
+      row.append(yu, el('div',{class:'row',style:'margin-top:6px'},[sb]));
+    }
+    return row;
+  }
+
+  function fillDone(c,id,jj){
     var u=base(), k=encodeURIComponent(key());
     api('/api/jobs/'+id).then(function(full){
       var r=full.result||{}, box=el('div',{});
@@ -276,6 +319,7 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
       var th=el('img',{class:'th',src:u+r.thumb+'?k='+k,alt:'썸네일'});
       var sv=el('a',{class:'bt',href:u+r.thumb+'?k='+k,download:'썸네일_'+id+'.jpg',target:'_blank',rel:'noopener',text:'썸네일 저장'});
       box.append(el('div',{class:'sec'},[el('h3',{text:'썸네일'}),th,el('div',{class:'row',style:'margin-top:8px'},[sv,el('span',{class:'mut',text:'아이폰: 이미지를 길게 눌러 사진에 저장'})])]));
+      if(jj) box.append(approvalRow(jj));
       var kb=el('div',{}); box.append(kb);
       box.append(el('div',{class:'mut',style:'margin-top:10px',text:'만든 시각 '+(full.finished||'')+' · 총 소요 '+elapsed(full.started||full.created, full.finished)+' · 작업 '+id}));
       var old=c.querySelector('.mut:last-child'); if(old && old.textContent==='불러오는 중...') old.remove();
@@ -285,10 +329,12 @@ details summary{cursor:pointer;color:var(--mut);font-size:13px}
   }
 
   function render(list){
-    var box=$('#jobs'), sig=JSON.stringify(list.map(function(j){return [j.id,j.status,j.stage_index,j.progress,j.error];}));
+    LAST=list; bar(list);
+    var box=$('#jobs'), sig=FLT+JSON.stringify(list.map(function(j){return [j.id,j.status,j.stage_index,j.progress,j.error,j.approval,j.youtube_url];}));
     if(box.dataset.sig===sig) return; box.dataset.sig=sig;
     box.replaceChildren();
-    list.forEach(function(j){ try{ box.append(jobCard(j)); }catch(e){} });
+    list.filter(inFlt).forEach(function(j){ try{ box.append(jobCard(j)); }catch(e){} });
+    if(!box.childNodes.length) box.append(el('div',{class:'card mut',text:'이 칸에 해당하는 영상이 없습니다.'}));
     var m=location.hash.match(/job=([\w-]+)/); if(m){ var t=document.getElementById('job-'+m[1]); if(t&&!box.dataset.scrolled){ box.dataset.scrolled='1'; t.scrollIntoView(); } }
   }
 

@@ -1376,6 +1376,8 @@
   function cgTopics(c) {
     var t = c && c.topics;
     if (!t || !t.length) return '';
+    window.CG_TOPICS = window.CG_TOPICS || {};
+    window.CG_TOPICS[c.name] = t;
     var rows = t.map(function (x, i) {
       var src = (x.sources || []).map(function (s) {
         var u = cgSafeUrl(s.url);
@@ -1387,9 +1389,77 @@
         (x.why ? '<div class="cg-tp-r"><b>왜</b> ' + obEsc(x.why) + '</div>' : '') +
         (src ? '<div class="cg-tp-r"><b>근거</b> ' + src + '</div>' : '') +
         (x.check ? '<div class="cg-tp-r warn"><b>확인 필요</b> ' + obEsc(x.check) + '</div>' : '') +
+        '<div class="cg-tp-r"><button class="cg-retry" type="button" data-ch="' + obEsc(c.name) + '" data-i="' + i + '" onclick="cgMake(this)">▶ 이 주제로 제작 (쇼츠)</button><span class="cg-make-msg"></span></div>' +
       '</div>';
     }).join('');
     return '<details class="cg-topics" open><summary>오늘의 추천 소재 ' + t.length + '개 · ' + obEsc(c.topics_date || '') + '</summary>' + rows + '</details>';
+  }
+
+  function cgMake(btn) {
+    var ch = btn.getAttribute('data-ch'), i = +btn.getAttribute('data-i');
+    var r = ((window.CG_TOPICS || {})[ch] || [])[i];
+    var msg = btn.nextElementSibling;
+    if (!r) return;
+    var u = '', k = '3188';
+    try { u = (localStorage.getItem('yd-director-url') || '').trim().replace(/\/+$/, ''); k = localStorage.getItem('yd-director-key') || '3188'; } catch (e) {}
+    if (!u) { msg.textContent = ' 먼저 제작실(🎬 제작실 열기)에서 PC 주소를 한 번 연결해 주세요'; return; }
+    var urls = (r.sources || []).map(function (s) { return s.url; }).filter(Boolean);
+    var topic;
+    if (ch.indexOf('트롯') >= 0) {
+      if (!urls.length) { msg.textContent = ' 기사 주소가 없어 트롯 제작을 시작할 수 없습니다'; return; }
+      topic = r.title + '\n' + urls.slice(0, 3).join('\n');
+    } else {
+      topic = r.title + (r.hook ? '. ' + r.hook : '') + (urls.length ? '\n' + urls.slice(0, 2).join('\n') : '');
+    }
+    if (!confirm('[' + ch + '] ' + r.title + '\n\n이 주제로 쇼츠 제작을 시작할까요? (PC에서 편당 약 5~7분, 앞에 대기 중인 작업이 있으면 그만큼 더 걸립니다)')) return;
+    btn.disabled = true; msg.textContent = ' 보내는 중...';
+    fetch(u + '/api/jobs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Director-Key': k },
+      body: JSON.stringify({ topic: topic, channel: ch, format: 'shorts', source: 'guide', auto: false })
+    }).then(function (res) {
+      if (res.status === 401) throw new Error('접속키가 맞지 않습니다');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }).then(function (j) {
+      btn.textContent = '제작 요청함';
+      msg.innerHTML = ' 대기열에 넣었습니다 (작업 ' + obEsc(j.job_id) + ') · <a href="./studio.html#job=' + encodeURIComponent(j.job_id) + '">제작실에서 보기</a>';
+    }).catch(function (e) {
+      btn.disabled = false;
+      msg.textContent = ' 실패: ' + e.message + ' (PC가 꺼져 있거나 주소가 바뀌었을 수 있습니다)';
+    });
+  }
+
+  function cgSeries(c) {
+    var s = c && c.series;
+    if (!s) return '';
+    var eps = (s.episodes || []).map(function (e) {
+      return '<div class="cg-tp-r"><b>' + obEsc(e.no) + '편</b> ' + obEsc(e.theme) + ' · ' + obEsc(e.status) + '</div>';
+    }).join('');
+    var nx = (s.next || []).map(function (x) {
+      return '<div class="cg-tp">' +
+        '<div class="cg-tp-t"><span class="cg-tp-n">' + obEsc(x.no) + '</span>다음 편 후보: ' + obEsc(x.theme) + '</div>' +
+        (x.why ? '<div class="cg-tp-r"><b>왜</b> ' + obEsc(x.why) + '</div>' : '') +
+        (x.check ? '<div class="cg-tp-r warn"><b>확인 필요</b> ' + obEsc(x.check) + '</div>' : '') +
+        (x.brief ? '<div class="cg-tp-r"><b>제작 지시문</b> (음악방에 붙여넣기)</div>' +
+          '<textarea readonly rows="6" style="width:100%;box-sizing:border-box;font-size:11.5px;background:rgba(0,0,0,0.25);color:inherit;border:1px solid rgba(255,255,255,0.18);border-radius:6px;padding:6px;">' + obEsc(x.brief) + '</textarea>' +
+          '<button class="cg-retry" type="button" onclick="cgCopy(this)">제작 지시문 복사</button>' : '') +
+      '</div>';
+    }).join('');
+    return '<details class="cg-topics" open><summary>' + obEsc(s.name) + '</summary>' +
+      (s.rule ? '<div class="cg-tp-r"><b>규칙</b> ' + obEsc(s.rule) + '</div>' : '') +
+      (s.how ? '<div class="cg-tp-r"><b>제작 방법</b> ' + obEsc(s.how) + '</div>' : '') +
+      eps + nx + '</details>';
+  }
+
+  function cgCopy(btn) {
+    var ta = btn.previousElementSibling;
+    if (!ta) return;
+    ta.focus(); ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) {}
+    if (!ok && navigator.clipboard) { navigator.clipboard.writeText(ta.value).then(function () { btn.textContent = '복사됨'; }); return; }
+    btn.textContent = ok ? '복사됨' : '위 글을 직접 선택해 복사하세요';
   }
 
   function cgRender(data) {
@@ -1421,6 +1491,7 @@
         '<div class="cg-row"><span class="cg-lb diag">병목</span><span class="cg-tx">' + obEsc(c.diagnosis) + '</span></div>' +
         '<div class="cg-row guide"><span class="cg-lb guide">길잡이</span><span class="cg-tx">' + obEsc(c.guide) + '</span></div>' +
         cgTopics(c) +
+        cgSeries(c) +
       '</div>';
     }).join('');
   }
